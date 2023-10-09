@@ -13,7 +13,6 @@ import axiosAuthInstance from "@/lib/axios/auth-instance";
 import { IError } from "@/types/interface/IError";
 import { signIn } from "next-auth/react";
 
-
 export default function SignInPage() {
   const {
     register,
@@ -69,51 +68,52 @@ export default function SignInPage() {
   }
 
   return (
-    <AnimatePresence>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <motion.div
-          animate={{ x: 0 }}
-          initial={{ x: "-100vw" }}
-          transition={{ duration: 0.2 }}
-          exit={{ x: "100vw", opacity: 0, transition: { duration: 0.5 } }}
-          className="mx-auto md:w-[450px] w-[350px] md:mt-40 mt-28 bg-slate-50 p-10 pt-7 rounded-2xl shadow-lg  "
-        >
-          <h2 className="mb-6">Login</h2>
-          <Input
-            {...register("email")}
-            errorMessage={errors?.email?.message}
-            label="Email"
-            labelPlacement="outside"
-            type="email"
-            placeholder="Enter your email"
-            className=" w-full  "
-            startContent={<MailIcon />}
-            isClearable
-            required
-            isRequired
-            maxLength={180}
-          />
-          <Input
-            {...register("password")}
-            errorMessage={errors?.password?.message}
-            label="Password"
-            type="password"
-            labelPlacement="outside"
-            placeholder="Enter your password"
-            className=" w-full mt-8  "
-            startContent={<KeyRoundIcon />}
-            isClearable
-            maxLength={32}
-            required
-            isRequired
-          />
-          <div className="flex justify-end mt-6">
-            <Button isLoading={isLoading} type="submit" color="primary">
-              Sign In
-            </Button>
-          </div>
-        </motion.div>
-      </form>
-    </AnimatePresence>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className=" w-full h-[80vh] flex-center justify-center"
+    >
+      <motion.div
+        animate={{ x: 0 }}
+        initial={{ x: "-100vw" }}
+        transition={{ duration: 0.2 }}
+      
+        className=" md:w-[450px] w-[350px]  bg-slate-50 p-10 pt-7 rounded-2xl shadow-lg  "
+      >
+        <h2 className="mb-6">Login</h2>
+        <Input
+          {...register("email")}
+          errorMessage={errors?.email?.message}
+          label="Email"
+          labelPlacement="outside"
+          type="email"
+          placeholder="Enter your email"
+          className=" w-full  "
+          startContent={<MailIcon />}
+          isClearable
+          required
+          isRequired
+          maxLength={180}
+        />
+        <Input
+          {...register("password")}
+          errorMessage={errors?.password?.message}
+          label="Password"
+          type="password"
+          labelPlacement="outside"
+          placeholder="Enter your password"
+          className=" w-full mt-8  "
+          startContent={<KeyRoundIcon />}
+          isClearable
+          maxLength={32}
+          required
+          isRequired
+        />
+        <div className="flex justify-end mt-6">
+          <Button isLoading={isLoading} type="submit" color="primary">
+            Sign In
+          </Button>
+        </div>
+      </motion.div>
+    </form>
   );
 }

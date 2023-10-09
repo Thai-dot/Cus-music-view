@@ -51,7 +51,11 @@ body {
 
 @layer components {
   .flex-center {
-    @apply flex items-center;
+    @apply flex items-center flex-wrap;
+  }
+
+  .poi {
+    @apply cursor-pointer;
   }
 }
 
@@ -65,3 +69,18 @@ body {
     font-family: "Sarabun", sans-serif;
   }
 }
+
+   .progress-bar {
+     background-color: #ccc;
+     height: 10px;
+     cursor: pointer;
+   }
+
+   .progress-bar-fill {
+     background-color: #007bff;
+     height: 100%;
+     display: flex;
+     align-items: center;
+     justify-content: flex-end;
+     color: white;
+   }

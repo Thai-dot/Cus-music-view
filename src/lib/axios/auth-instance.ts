@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { getSession } from "next-auth/react";
 
 const axiosAuthInstance = axios.create({
   baseURL: process.env.BACKEND_BASE_URL,
@@ -9,8 +10,9 @@ const axiosAuthInstance = axios.create({
 });
 
 axiosAuthInstance.interceptors.request.use(
-  (config: any) => {
-    const token = Cookies.get("token");
+  async (config: any) => {
+    const session = await getSession()
+    const token =session?.user.access_token;
     if (token) {
       const newConfig = {
         ...config,
