@@ -5,9 +5,10 @@ import {
   SONG_UPLOAD_MAX_SIZE,
 } from "@/constant/config";
 import SONG_TYPE, { songTypeArray } from "@/types/enum/song-type";
+import { File } from "buffer";
 import { z } from "zod";
 
-export const MusicPostValidator = z.object({
+export const AddMusicValidator = z.object({
   songName: z
     .string()
     .max(100, { message: "Song name can't be longer than 100 lengths" })
@@ -17,7 +18,8 @@ export const MusicPostValidator = z.object({
     .max(100, { message: "Author name can't be longer than 100 lengths" })
     .min(2, { message: "Author name can't be smaller than 2 lengths" })
     .nullish()
-    .optional(),
+    .optional()
+    .or(z.literal("")),
   songFile: z
     .any()
     .refine(
@@ -29,19 +31,31 @@ export const MusicPostValidator = z.object({
       "Only .mp3, .wav, basic and midx formats are supported."
     ),
   imgFile: z
-
     .any()
-    .refine(
-      (file) => file[0]?.size <= FILE_UPLOAD_MAX_SIZE,
-      `Max image size is 8MB.`
-    )
-    .refine(
-      (file) => ALLOWED_IMG_UPLOAD_TYPE.includes(file[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
-    )
+    .nullish(),
+
+  visibility: z.boolean(),
+  type: z.string().optional(),
+});
+
+export const UpdateMusicValidator = z.object({
+  songName: z
+    .string()
+    .max(100, { message: "Song name can't be longer than 100 lengths" })
+    .min(2, { message: "Song name can't be smaller than 2 lengths" }),
+  author: z
+    .string()
+    .max(100, { message: "Author name can't be longer than 100 lengths" })
+    .min(2, { message: "Author name can't be smaller than 2 lengths" })
+    .nullish()
+    .optional()
+    .or(z.literal("")),
+  imgFile: z
+    .any()
     .nullish(),
   visibility: z.boolean(),
   type: z.string().optional(),
 });
 
-export type MusicPostValidatorType = z.infer<typeof MusicPostValidator>;
+export type AddMusicValidatorType = z.infer<typeof AddMusicValidator>;
+export type UpdateMusicValidatorType = z.infer<typeof UpdateMusicValidator>;

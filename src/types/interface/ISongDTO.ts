@@ -5,7 +5,7 @@ export interface ISongDto {
   songName: string;
   songFileName?: string;
   songURL?: string;
-  size: number;
+  size?: number;
   extension?: string;
   type?: SONG_TYPE;
   imgURL?: string;
@@ -15,6 +15,8 @@ export interface ISongDto {
   dislikes?: number;
   visibility?: boolean;
 }
+
+
 
 export interface ISong extends ISongDto {
   id: number;

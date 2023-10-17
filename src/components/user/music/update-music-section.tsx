@@ -1,7 +1,16 @@
 "use client";
 
-import { Input, Select, SelectItem, Switch, Tooltip } from "@nextui-org/react";
-import { Eye, EyeOff, Plus, PlusCircle } from "lucide-react";
+import {
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Select,
+  SelectItem,
+  Switch,
+  Tooltip,
+} from "@nextui-org/react";
+import { Eye, EyeOff, PenSquare, Plus, Settings, Trash2 } from "lucide-react";
 import {
   Modal,
   ModalContent,
@@ -10,78 +19,110 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
 
 import React from "react";
 import FormControl from "@/components/ui-component/form-control";
 import FileUpload from "@/components/ui-component/file-upload";
-import SONG_TYPE, { songTypeArray } from "@/types/enum/song-type";
+import { songTypeArray } from "@/types/enum/song-type";
 import { useForm } from "react-hook-form";
 import {
-  AddMusicValidator,
-  AddMusicValidatorType,
+  UpdateMusicValidator,
+  UpdateMusicValidatorType,
 } from "@/lib/validator/music";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useMutation } from "react-query";
+import { QueryClient, useMutation } from "react-query";
 import { IError } from "@/types/interface/IError";
 import toast from "react-hot-toast";
-import { uploadImg } from "@/lib/axios/fetch/upload/upload-image";
-import { uploadSong } from "@/lib/axios/fetch/upload/upload-song";
+import { deleteImg, uploadImg } from "@/lib/axios/fetch/upload/upload-image";
 import IReturnFileInformation from "@/types/interface/IReturnFileInformation";
 import { ISong, ISongDto } from "@/types/interface/ISongDTO";
-import { fetchAddNewSong } from "@/lib/axios/fetch/song/input-song";
-import bytesToMB from "@/utils/bytes-to-mb";
+import { fetchUpdateSong } from "@/lib/axios/fetch/song/input-song";
 import { useAppDispatch } from "@/redux/store";
 import { setFormSubmitted } from "@/redux/slice/song";
 import {
   ALLOWED_IMG_UPLOAD_TYPE,
   FILE_UPLOAD_MAX_SIZE,
 } from "@/constant/config";
+import { deleteSongs } from "@/lib/axios/fetch/song/delete-song";
 
-export default function AddMusicSection() {
+interface UpdateSongSectionProps {
+  song: ISong;
+}
+
+export default function UpdateSongSection({ song }: UpdateSongSectionProps) {
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [isSelected, setIsSelected] = React.useState(false);
-  const [fileErr, setFileErr] = React.useState("");
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onOpenChange: onOpenChangeDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
 
+  const [isSelected, setIsSelected] = React.useState(song.visibility);
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 0,
+        refetchOnWindowFocus: true,
+        cacheTime: 0,
+      },
+    },
+  });
+
+  const refreshQuery = async () => {
+    await queryClient.refetchQueries(["fetchSongByUser"], { active: true });
+    await queryClient.refetchQueries(["song-user-infinite"]);
+  };
+
+  const [fileErr, setFileErr] = React.useState("");
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<AddMusicValidatorType>({
-    resolver: zodResolver(AddMusicValidator),
+  } = useForm<UpdateMusicValidatorType>({
+    resolver: zodResolver(UpdateMusicValidator),
     defaultValues: {
-      songName: "",
-      author: "",
-      songFile: undefined,
+      songName: song.songName,
+      author: song.author,
       imgFile: undefined,
-      visibility: false,
-      type: "",
+      visibility: song.visibility,
+      type: song.type,
     },
   });
 
-  const { isLoading, mutate: addMusic } = useMutation<ISong, IError, ISongDto>({
+  const { isLoading, mutate: updateMusic } = useMutation<
+    ISong,
+    IError,
+    ISongDto
+  >({
     mutationFn: async (reqData) => {
-      const { data } = await fetchAddNewSong(reqData);
+      const { data } = await fetchUpdateSong(song.id, reqData);
 
       return data as ISong;
     },
     onError: () => {
-      toast.error("Added new song failed 😣");
+      toast.error("Updated song failed 😣");
     },
-    onSuccess: () => {
-      toast.success("Added new song successfully 😂");
-
+    onSuccess: async () => {
+      toast.success("Updated song successfully 😂");
+      await refreshQuery();
       setTimeout(onClose, 2000);
       dispatch(setFormSubmitted(true));
+
       window.location.reload();
-      reset();
     },
   });
 
-  async function onSubmit(data: AddMusicValidatorType) {
+  async function onSubmit(data: UpdateMusicValidatorType) {
     try {
       setFileErr("");
       console.log(data);
@@ -90,13 +131,11 @@ export default function AddMusicSection() {
       let dto: any = {
         songName: data.songName,
 
-        type: !!data.type ? data.type : "OTHERS",
+        type: !!data.type ? data.type : song.type,
 
-        author: data.author ?? "No artist",
+        author: data.author ?? song.author,
 
         visibility: isSelected,
-        likes: 0,
-        dislikes: 0,
       };
       if (data.imgFile[0]) {
         if (FILE_UPLOAD_MAX_SIZE < data.imgFile[0]?.size) {
@@ -112,25 +151,19 @@ export default function AddMusicSection() {
         }
         imgUploadInfor = await uploadImg(data.imgFile[0]);
         if (imgUploadInfor) {
+          await deleteImg(song.imgFileName);
           dto["imgURL"] = imgUploadInfor.url;
 
           dto["imgFileName"] = imgUploadInfor.fileName;
         }
       }
 
-      const [songRes]: [IReturnFileInformation] = await Promise.all([
-        uploadSong(data.songFile[0]),
-      ]);
-
-      addMusic({
+      updateMusic({
         ...dto,
-        size: bytesToMB(songRes.fileSize),
-        songFileName: songRes.fileName,
-        songURL: songRes.url,
-        extension: songRes.extension,
       });
     } catch (error) {
       console.log(error);
+
       toast.error("Something is wrong, can't add new song");
     }
   }
@@ -138,14 +171,35 @@ export default function AddMusicSection() {
   return (
     <div>
       <div>
-        <Tooltip content="Add new music" className="poi" placement="bottom">
-          <PlusCircle
-            onClick={() => {
-              onOpen();
-              dispatch(setFormSubmitted(false));
-            }}
-            className="poi"
-          />
+        <Tooltip content="Update this music" className="poi" placement="bottom">
+          <Dropdown>
+            <DropdownTrigger>
+              <Settings className="poi hover:text-slate-600" />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Static Actions">
+              <DropdownItem
+                key="update"
+                onClick={() => {
+                  onOpen();
+                  dispatch(setFormSubmitted(false));
+                }}
+                startContent={<PenSquare size={18} />}
+                className="hover:text-slate-700 poi"
+              >
+                Update this song
+              </DropdownItem>
+
+              <DropdownItem
+                key="delete"
+                startContent={<Trash2 size={18} />}
+                className="text-danger poi"
+                color="danger"
+                onClick={onOpenDelete}
+              >
+                Delete this song
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </Tooltip>
         <Modal
           isOpen={isOpen}
@@ -157,7 +211,7 @@ export default function AddMusicSection() {
             {(onClose) => (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalHeader className="flex flex-col gap-1">
-                  Add New Song
+                  Update Song
                 </ModalHeader>
                 <ModalBody>
                   <FormControl>
@@ -182,16 +236,8 @@ export default function AddMusicSection() {
 
                   <FormControl>
                     <FileUpload
-                      error={errors.songFile?.message?.toString()}
-                      label="Music's file upload"
-                      {...register("songFile")}
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <FileUpload
-                      label="Music's background image upload"
-                      error={errors.imgFile?.message?.toString()}
+                      label="Music's background image update"
+                      error={fileErr}
                       {...register("imgFile")}
                     />
                   </FormControl>
@@ -200,6 +246,7 @@ export default function AddMusicSection() {
                     <div className="flex-center justify-between">
                       <Select
                         {...register("type")}
+                        placeholder={song.type}
                         label="Song Type"
                         size="sm"
                         className=" w-44 "
@@ -232,10 +279,38 @@ export default function AddMusicSection() {
                     color="primary"
                     type="submit"
                   >
-                    Add
+                    Update
                   </Button>
                 </ModalFooter>
               </form>
+            )}
+          </ModalContent>
+        </Modal>
+
+        <Modal
+          isOpen={isOpenDelete}
+          backdrop="opaque"
+          className=" z-[10000]"
+          onOpenChange={onOpenChangeDelete}
+        >
+          <ModalContent>
+            {(onCloseDelete) => (
+              <div className="p-8">
+                <h6 className="my-5">Want to delete this song???</h6>
+                <div className="flex-center justify-between ">
+                  <Button color="secondary" onPress={onCloseDelete}>
+                    Cancel
+                  </Button>
+                  <Button
+                    color="danger"
+                    onClick={async () => {
+                      await deleteSongs([song.id]);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </div>
             )}
           </ModalContent>
         </Modal>

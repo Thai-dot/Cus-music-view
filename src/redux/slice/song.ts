@@ -3,20 +3,22 @@ import { ISong } from "@/types/interface/ISongDTO";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-export interface SongSortState {
+export interface ISongState {
   songName: string;
   type: SONG_TYPE | "";
   visibility: "" | true | false;
   musicPlayerDisplay: boolean;
   song?: ISong;
+  isFormSubmitted?: boolean;
 }
 
-const initialState: SongSortState = {
+const initialState: ISongState = {
   songName: "",
   type: "",
   visibility: "",
   musicPlayerDisplay: false,
   song: undefined,
+  isFormSubmitted: false,
 };
 
 type SortType = "songName" | "type" | "visibility";
@@ -29,11 +31,6 @@ export const songSlice = createSlice({
       state,
       action: PayloadAction<{ sortType: SortType; value: any }>
     ) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-
       state[action.payload.sortType] = action.payload.value;
     },
     setMusicPlayerDisplay: (state, action: PayloadAction<boolean>) => {
@@ -42,11 +39,18 @@ export const songSlice = createSlice({
     setMusicToPlayer: (state, action: PayloadAction<ISong>) => {
       state.song = action.payload;
     },
+    setFormSubmitted: (state, action: PayloadAction<boolean>) => {
+      state.isFormSubmitted = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setSortSong, setMusicPlayerDisplay, setMusicToPlayer } =
-  songSlice.actions;
+export const {
+  setSortSong,
+  setMusicPlayerDisplay,
+  setMusicToPlayer,
+  setFormSubmitted,
+} = songSlice.actions;
 
 export default songSlice.reducer;

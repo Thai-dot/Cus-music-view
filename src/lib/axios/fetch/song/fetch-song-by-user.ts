@@ -6,13 +6,13 @@ export const fetchSongByUser = async (
   limit = 5,
   songName = "",
   type = "",
-  visibility = ""
+  visibility: boolean | ""
 ) => {
   const { data } = await axiosAuthInstance.get(
     "/song/get-all?" +
-      (!!type ? `type=${type}` : "") +
-      (!!songName ? `songName=${songName}` : "") +
-      (!!visibility ? `visibility=${visibility}` : ""),
+      (!!type ? `type=${type}&` : "") +
+      (!!songName ? `songName=${songName}&` : "") +
+      (visibility !=="" ? `visibility=${visibility}` : ""),
     {
       params: {
         page,

@@ -18,3 +18,11 @@ export const uploadSong = async (file: File) => {
     console.error(error);
   }
 };
+
+export const deleteSongFile = async (name: string | undefined) => {
+  try {
+    await axiosAuthInstance.delete(`/song-upload/delete/${name}`);
+  } catch (error) {
+    console.log(error);
+  }
+};

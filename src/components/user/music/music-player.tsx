@@ -141,13 +141,11 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
   }, [currentTime, duration, repeatMode, timesRepeat, speed, song]);
 
   React.useEffect(() => {
-    console.log(isOpenPlayer);
+    setIsPlaying(false);
     if (!isOpen && isOpenPlayer) {
       setIsOpen(isOpenPlayer);
     }
-
-    setIsPlaying(false);
-  }, [isOpenPlayer, isOpen,song]);
+  }, [isOpenPlayer, isOpen, song]);
 
   const reset = () => {
     if (audioRef.current) {
@@ -179,6 +177,18 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
     setRepeatMode(mode);
   };
 
+  const onClosePlayer = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    setIsOpen(false);
+    const audioElement = audioRef.current;
+
+    if (audioElement) {
+      audioElement.pause();
+    }
+    if (typeof onClose === "function") {
+      onClose(e);
+    }
+  };
+
   return (
     <div className="fixed bottom-0 left-0 w-full  z-50">
       <motion.div
@@ -191,12 +201,7 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
         <div>
           <div
             className=" poi absolute top-1 md:right-4 right-1 text-red-500"
-            onClick={(e: any) => {
-              setIsOpen(false);
-              if (typeof onClose === "function") {
-                onClose(e);
-              }
-            }}
+            onClick={onClosePlayer}
           >
             <XCircle />
           </div>

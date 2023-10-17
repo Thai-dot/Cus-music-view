@@ -1,12 +1,13 @@
 import { ISong } from "@/types/interface/ISongDTO";
 import React from "react";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 import { fetchSongByUser } from "@/lib/axios/fetch/song/fetch-song-by-user";
 import { IQueryError } from "@/types/interface/IError";
 import MusicCard from "./music-card";
 import { INFINITE_SCROLL_PAGINATION_SONG_LIMIT } from "@/constant/config";
 import { useIntersectionObserver } from "@/custom-hooks/use-intersection-observer";
 import { HashLoader } from "react-spinners";
+import { useAppSelector } from "@/redux/store";
 
 export default function MusicCardListInfiniteSection({
   initialSongs,
@@ -17,6 +18,9 @@ export default function MusicCardListInfiniteSection({
   const entry = useIntersectionObserver(lastSongRef, {
     threshold: 1,
   });
+  const song = useAppSelector((state) => state.songSliceReducer);
+
+  const queryClient = useQueryClient();
 
   const {
     isLoading,
@@ -25,13 +29,16 @@ export default function MusicCardListInfiniteSection({
     data,
     fetchNextPage,
     isFetchingNextPage,
-    hasNextPage,
+    refetch,
   } = useInfiniteQuery<any, IQueryError>(
-    "song-user",
+    "song-user-infinite",
     async ({ pageParam = 1 }) => {
       const { data } = await fetchSongByUser(
         pageParam,
-        INFINITE_SCROLL_PAGINATION_SONG_LIMIT
+        INFINITE_SCROLL_PAGINATION_SONG_LIMIT,
+        song.songName,
+        song.type,
+        song.visibility
       );
       return data;
     },
@@ -49,7 +56,15 @@ export default function MusicCardListInfiniteSection({
     }
   }, [entry, fetchNextPage]);
 
- 
+  React.useEffect(() => {
+    refetch();
+  }, [
+    song.isFormSubmitted,
+    refetch,
+    song.songName,
+    song.type,
+    song.visibility,
+  ]);
 
   const songs = data?.pages.flatMap((page) => page) ?? initialSongs;
 
