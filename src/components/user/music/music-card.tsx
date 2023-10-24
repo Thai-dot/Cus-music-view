@@ -31,7 +31,7 @@ export default function MusicCard({ song }: { song: ISong }) {
           <small className="text-default-500 break-words capitalize text-inherit">
             {truncateText(!!song?.author ? song?.author : "No artist", 18)}
           </small>
-          <h5 className="font-bold  text-large break-words capitalize">
+          <h5 className="font-bold  text-large break-words capitalize text-primary-600">
             {truncateText(song?.songName ?? "", 15)}
           </h5>
         </CardHeader>

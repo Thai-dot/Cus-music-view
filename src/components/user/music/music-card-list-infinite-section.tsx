@@ -1,4 +1,3 @@
-import { ISong } from "@/types/interface/ISongDTO";
 import React from "react";
 import { useInfiniteQuery, useQueryClient } from "react-query";
 import { fetchSongByUser } from "@/lib/axios/fetch/song/fetch-song-by-user";
@@ -19,8 +18,6 @@ export default function MusicCardListInfiniteSection({
     threshold: 1,
   });
   const song = useAppSelector((state) => state.songSliceReducer);
-
-  const queryClient = useQueryClient();
 
   const {
     isLoading,
@@ -55,6 +52,9 @@ export default function MusicCardListInfiniteSection({
       fetchNextPage(); // Load more posts when the last post comes into view
     }
   }, [entry, fetchNextPage]);
+
+
+
 
   React.useEffect(() => {
     refetch();

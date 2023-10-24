@@ -144,7 +144,7 @@ export default function AddMusicSection() {
               onOpen();
               dispatch(setFormSubmitted(false));
             }}
-            className="poi"
+            className="poi text-primary"
           />
         </Tooltip>
         <Modal
@@ -191,7 +191,7 @@ export default function AddMusicSection() {
                   <FormControl>
                     <FileUpload
                       label="Music's background image upload"
-                      error={errors.imgFile?.message?.toString()}
+                      error={fileErr}
                       {...register("imgFile")}
                     />
                   </FormControl>

@@ -24,6 +24,7 @@ export default function DisplayMusicSection() {
     )
   );
 
+
   React.useEffect(() => {
     refetch();
   }, [
@@ -43,7 +44,7 @@ export default function DisplayMusicSection() {
       {data.data.length === 0 ? (
         <div className="flex-center justify-center flex-col w-full mt-10">
           <Frown size={25} />
-          <p>There  is no result found :(</p>
+          <p>There is no result found :(</p>
         </div>
       ) : (
         <div className="grid grid-cols-12 gap-10 pb-20">

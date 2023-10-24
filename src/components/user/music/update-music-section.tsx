@@ -50,6 +50,7 @@ import {
   FILE_UPLOAD_MAX_SIZE,
 } from "@/constant/config";
 import { deleteSongs } from "@/lib/axios/fetch/song/delete-song";
+import { createPortal } from "react-dom";
 
 interface UpdateSongSectionProps {
   song: ISong;
@@ -164,9 +165,21 @@ export default function UpdateSongSection({ song }: UpdateSongSectionProps) {
     } catch (error) {
       console.log(error);
 
-      toast.error("Something is wrong, can't add new song");
+      toast.error("Something is wrong, can't add update song");
     }
   }
+
+  const deleteSong = async (id: number) => {
+    try {
+      await deleteSongs([id]);
+      toast.success("Deleted song successfully ");
+      dispatch(setFormSubmitted(true));
+      setTimeout(onCloseDelete, 1500);
+      window.location.reload();
+    } catch (error) {
+      toast.error("Failed to delete the song");
+    }
+  };
 
   return (
     <div>
@@ -194,98 +207,104 @@ export default function UpdateSongSection({ song }: UpdateSongSectionProps) {
                 startContent={<Trash2 size={18} />}
                 className="text-danger poi"
                 color="danger"
-                onClick={onOpenDelete}
+                onClick={() => {
+                  onOpenDelete();
+                  dispatch(setFormSubmitted(false));
+                }}
               >
                 Delete this song
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </Tooltip>
-        <Modal
-          isOpen={isOpen}
-          backdrop="opaque"
-          className=" z-[10000]"
-          onOpenChange={onOpenChange}
-        >
-          <ModalContent>
-            {(onClose) => (
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalHeader className="flex flex-col gap-1">
-                  Update Song
-                </ModalHeader>
-                <ModalBody>
-                  <FormControl>
-                    <Input
-                      placeholder="Song name"
-                      label="Song Name"
-                      maxLength={100}
-                      errorMessage={errors.songName?.message}
-                      {...register("songName")}
-                    />
-                  </FormControl>
+        {createPortal(
+          <Modal
+            isOpen={isOpen}
+            backdrop="opaque"
+            className=" z-[10000]"
+            onOpenChange={onOpenChange}
+          >
+            <ModalContent>
+              {(onClose) => (
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <ModalHeader className="flex flex-col gap-1">
+                    Update Song
+                  </ModalHeader>
+                  <ModalBody>
+                    <FormControl>
+                      <Input
+                        placeholder="Song name"
+                        label="Song Name"
+                        maxLength={100}
+                        errorMessage={errors.songName?.message}
+                        {...register("songName")}
+                      />
+                    </FormControl>
 
-                  <FormControl>
-                    <Input
-                      placeholder="Artist"
-                      label="Artist Name"
-                      maxLength={120}
-                      errorMessage={errors.author?.message}
-                      {...register("author")}
-                    />
-                  </FormControl>
+                    <FormControl>
+                      <Input
+                        placeholder="Artist"
+                        label="Artist Name"
+                        maxLength={120}
+                        errorMessage={errors.author?.message}
+                        {...register("author")}
+                      />
+                    </FormControl>
 
-                  <FormControl>
-                    <FileUpload
-                      label="Music's background image update"
-                      error={fileErr}
-                      {...register("imgFile")}
-                    />
-                  </FormControl>
+                    <FormControl>
+                      <FileUpload
+                        label="Music's background image update"
+                        error={fileErr}
+                        {...register("imgFile")}
+                      />
+                    </FormControl>
 
-                  <FormControl>
-                    <div className="flex-center justify-between">
-                      <Select
-                        {...register("type")}
-                        placeholder={song.type}
-                        label="Song Type"
-                        size="sm"
-                        className=" w-44 "
-                      >
-                        {songTypeArray.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </Select>
+                    <FormControl>
+                      <div className="flex-center justify-between">
+                        <Select
+                          {...register("type")}
+                          placeholder={song.type}
+                          label="Song Type"
+                          size="sm"
+                          className=" w-44 "
+                        >
+                          {songTypeArray.map((item) => (
+                            <SelectItem key={item} value={item}>
+                              {item}
+                            </SelectItem>
+                          ))}
+                        </Select>
 
-                      <Switch
-                        isSelected={isSelected}
-                        onValueChange={setIsSelected}
-                        startContent={<Eye />}
-                        endContent={<EyeOff />}
-                      >
-                        Visibility
-                      </Switch>
-                    </div>
-                  </FormControl>
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Close
-                  </Button>
-                  <Button
-                    startContent={<Plus />}
-                    isLoading={isLoading}
-                    color="primary"
-                    type="submit"
-                  >
-                    Update
-                  </Button>
-                </ModalFooter>
-              </form>
-            )}
-          </ModalContent>
-        </Modal>
+                        <Switch
+                          isSelected={isSelected}
+                          onValueChange={setIsSelected}
+                          startContent={<Eye />}
+                          endContent={<EyeOff />}
+                        >
+                          Visibility
+                        </Switch>
+                      </div>
+                    </FormControl>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="danger" variant="light" onPress={onClose}>
+                      Close
+                    </Button>
+                    <Button
+                      startContent={<Plus />}
+                      isLoading={isLoading}
+                      color="primary"
+                      type="submit"
+                    >
+                      Update
+                    </Button>
+                  </ModalFooter>
+                </form>
+              )}
+            </ModalContent>
+          </Modal>,
+          document.body
+        )}
 
         <Modal
           isOpen={isOpenDelete}
@@ -296,17 +315,12 @@ export default function UpdateSongSection({ song }: UpdateSongSectionProps) {
           <ModalContent>
             {(onCloseDelete) => (
               <div className="p-8">
-                <h6 className="my-5">Want to delete this song???</h6>
+                <h4 className="mt-1 mb-6">Want to delete this song???</h4>
                 <div className="flex-center justify-between ">
-                  <Button color="secondary" onPress={onCloseDelete}>
+                  <Button color="default" onPress={onCloseDelete}>
                     Cancel
                   </Button>
-                  <Button
-                    color="danger"
-                    onClick={async () => {
-                      await deleteSongs([song.id]);
-                    }}
-                  >
+                  <Button color="danger" onClick={() => deleteSong(song.id)}>
                     Delete
                   </Button>
                 </div>

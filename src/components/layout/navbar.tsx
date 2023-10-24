@@ -40,7 +40,7 @@ export default function NavbarLayout() {
     },
     {
       name: "My Lists",
-      link: "/user/list",
+      link: "/user/play-list",
     },
     {
       name: "Log out",
@@ -76,7 +76,7 @@ export default function NavbarLayout() {
   return (
     <motion.nav
       style={{
-        backgroundColor: isHomePage ? backgroundColor : "#f8fafc",
+        backgroundColor: isHomePage ? backgroundColor : "#ddecfa",
         transition: "background-color 0.2s",
       }}
       className="fixed w-full z-20 border-transparent"
@@ -85,11 +85,11 @@ export default function NavbarLayout() {
         <NavbarContent>
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            className="sm:hidden text-amber-500"
+            className="sm:hidden text-primary"
           />
           <NavbarBrand>
             <Link href="/">
-              <p className="font-extrabold text-amber-500 ">YML</p>
+              <p className="font-extrabold text-primary ">YML</p>
             </Link>
           </NavbarBrand>
         </NavbarContent>
@@ -98,7 +98,7 @@ export default function NavbarLayout() {
           {menuItems.map((item) => {
             return (
               <NavbarItem key={item.name} isActive={pathName === item.link}>
-                <Link className="text-amber-500 font-semibold" href={item.link}>
+                <Link className="text-primary font-semibold" href={item.link}>
                   {item.name}
                 </Link>
               </NavbarItem>
@@ -113,7 +113,7 @@ export default function NavbarLayout() {
                   <Avatar
                     name={email.email.slice(0, 1)}
                     classNames={{
-                      base: "bg-gradient-to-br from-[#FFB457] to-[#FF705B]",
+                      base: "bg-gradient-to-br from-[#00B4DB] to-[#0083B0]",
                     }}
                     className=" cursor-pointer uppercase"
                   />
@@ -126,7 +126,7 @@ export default function NavbarLayout() {
                           {" "}
                           <div
                             onClick={() => signOut()}
-                            className="text-amber-500"
+                            className="text-primary"
                           >
                             {item.name}
                           </div>
@@ -137,10 +137,7 @@ export default function NavbarLayout() {
                     return (
                       <DropdownItem key={item.name}>
                         {" "}
-                        <Link
-                          href={item.link}
-                          className="w-full text-amber-500"
-                        >
+                        <Link href={item.link} className="w-full text-primary">
                           {item.name}
                         </Link>
                       </DropdownItem>
@@ -152,30 +149,30 @@ export default function NavbarLayout() {
           ) : (
             <>
               <NavbarItem className="hidden lg:flex">
-                <Link href="/sign-in" className="text-amber-500">
+                <Link href="/sign-in" className="text-primary">
                   Sign In
                 </Link>
               </NavbarItem>
               <NavbarItem className="hidden lg:flex">
-                <Link href="/sign-up" className="text-amber-500">
+                <Link href="/sign-up" className="text-primary">
                   Sign Up
                 </Link>
               </NavbarItem>
               <NavbarItem className="lg:hidden flex">
                 <Dropdown>
                   <DropdownTrigger>
-                    <LogIn className="text-amber-500" cursor="pointer" />
+                    <LogIn className="text-primary" cursor="pointer" />
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Static Actions">
                     <DropdownItem key="signIn">
                       {" "}
-                      <Link href="/sign-in" className="text-amber-500">
+                      <Link href="/sign-in" className="text-primary">
                         Sign In
                       </Link>
                     </DropdownItem>
                     <DropdownItem key="signUp">
                       {" "}
-                      <Link href="/sign-up" className="text-amber-500">
+                      <Link href="/sign-up" className="text-primary">
                         Sign Up
                       </Link>
                     </DropdownItem>
@@ -188,11 +185,7 @@ export default function NavbarLayout() {
         <NavbarMenu>
           {menuItems.map((item, index) => (
             <NavbarMenuItem key={`${item.name}-${index}`}>
-              <Link
-                className="w-full text-amber-500"
-                href={item.link}
-                size="lg"
-              >
+              <Link className="w-full text-primary" href={item.link} size="lg">
                 {item.name}
               </Link>
             </NavbarMenuItem>

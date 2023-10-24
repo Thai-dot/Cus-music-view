@@ -19,7 +19,7 @@ export default function MainLayout({
       <div className={cn("min-h-screen", pathName === "/" ? "" : "py-16")}>
         {children}
       </div>
-      {/* <FooterLayout /> */}
+      <FooterLayout />
     </div>
   );
 }

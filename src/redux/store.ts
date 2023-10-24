@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
 import counterSliceReducer from "./slice/count";
 import songSliceReducer from "./slice/song";
+import playlistSliceReducer from "./slice/playlist";
 
 export const store = configureStore({
   reducer: {
     counterSliceReducer,
     songSliceReducer,
+    playlistSliceReducer,
   },
 });
 

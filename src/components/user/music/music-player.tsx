@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Progress } from "@nextui-org/react";
+import { Image, Progress } from "@nextui-org/react";
 import ReactPlayer from "react-player";
 import {
   PauseCircle,
@@ -192,133 +192,150 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
   return (
     <div className="fixed bottom-0 left-0 w-full  z-50">
       <motion.div
-        initial={{ y: "0%" }}
+        initial={{ y: "100%" }}
         animate={{ y: isOpen ? "0%" : "100%" }}
         transition={{ duration: 0.3 }}
         className="bg-slate-100 text-white shadow-lg shadow-slate-500  p-5"
       >
         <audio ref={audioRef} src={song?.songURL}></audio>
-        <div>
+        <div className="grid-cols-12 grid gap-5">
           <div
             className=" poi absolute top-1 md:right-4 right-1 text-red-500"
             onClick={onClosePlayer}
           >
             <XCircle />
           </div>
-          <div className="flex-center justify-center gap-6 md:pl-16 sm:pl-20 pl-4 pt-2 ">
-            <div className="w-4 mr-2">
-              <Dropdown className="outline-none border-none focus-within:border-none focus:border-none focus-visible:border-none  focus-within:outline-none focus:outline-none focus-visible:outline-none ">
-                <DropdownTrigger className="outline-none border-none focus-within:border-none focus:border-none focus-visible:border-none  focus-within:outline-none focus:outline-none focus-visible:outline-none ">
-                  <button className="text-slate-700">{`x${speed}`}</button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  aria-label="speed controls"
-                  className=" h-32 overflow-auto"
-                >
-                  {SPEED_ARRAY.map((speed) => (
-                    <DropdownItem
-                      key={speed}
-                      onClick={() => {
-                        setSpeed(speed);
-                      }}
-                    >
-                      {speed}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-            <button>
-              {repeatMode === 0 ? (
-                <Repeat
-                  onClick={() => onChangeRepeatMode(1)}
-                  className="text-slate-700"
-                />
-              ) : repeatMode === 1 ? (
-                <Repeat
-                  onClick={() => onChangeRepeatMode(2)}
-                  className="text-green-500"
-                />
-              ) : (
-                <Repeat1
-                  onClick={() => onChangeRepeatMode(0)}
-                  className="text-green-500"
-                />
-              )}
-            </button>
-            <button onClick={togglePlay}>
-              {isPlaying ? (
-                <PauseCircle className="text-slate-600 scale-150" />
-              ) : (
-                <PlayCircle className="text-slate-600 scale-150" />
-              )}
-            </button>
-            <button onClick={reset}>
-              <RotateCcw className="text-slate-700" />
-            </button>
-            <div
-              className={cn("flex-center gap-2")}
-              onMouseEnter={() => setIsOpenVolume(true)}
-              onMouseLeave={() => setIsOpenVolume(false)}
-            >
-              {volume === 0 ? (
-                <VolumeX
-                  onClick={() => onVolume(50)}
-                  className="text-slate-700 poi"
-                />
-              ) : volume < 50 ? (
-                <Volume1
-                  onClick={() => onVolume(0)}
-                  className="text-slate-700 poi"
-                />
-              ) : (
-                <Volume2
-                  onClick={() => onVolume(0)}
-                  className="text-slate-700 poi"
-                />
-              )}
 
-              <motion.input
-                type="range"
-                initial={{ opacity: 0 }}
-                layout
-                style={{
-                  width: isOpenVolume ? "50%" : "0%",
-                  opacity: isOpenVolume ? 1 : 0,
-                }}
-                transition={{ duration: 0.2 }}
-                min={0}
-                max={100}
-                onChange={(e) => onVolume(e)}
-                value={volume}
-                className="poi"
+          <div className="col-span-2 md:block hidden">
+            <div className="flex-center flex-col gap-2">
+              <Image
+                className="w-[85px] h-[65px] object-cover border-2 border-slate-500 shadow-2xl"
+                src={
+                  !!song?.imgURL
+                    ? song.imgURL
+                    : "/image/hero-card-complete.jpeg"
+                }
+                alt={song?.songName}
               />
+              <p className="text-slate-800">{song?.songName}</p>
             </div>
           </div>
+          <div className="md:col-span-10 col-span-12">
+            <div className="  flex-center justify-center gap-6 md:pl-16 sm:pl-20 pl-4 pt-2 ">
+              <div className="w-4 mr-2">
+                <Dropdown className="outline-none border-none focus-within:border-none focus:border-none focus-visible:border-none  focus-within:outline-none focus:outline-none focus-visible:outline-none ">
+                  <DropdownTrigger className="outline-none border-none focus-within:border-none focus:border-none focus-visible:border-none  focus-within:outline-none focus:outline-none focus-visible:outline-none ">
+                    <button className="text-slate-700">{`x${speed}`}</button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    aria-label="speed controls"
+                    className=" h-32 overflow-auto"
+                  >
+                    {SPEED_ARRAY.map((speed) => (
+                      <DropdownItem
+                        key={speed}
+                        onClick={() => {
+                          setSpeed(speed);
+                        }}
+                      >
+                        {speed}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+              <button>
+                {repeatMode === 0 ? (
+                  <Repeat
+                    onClick={() => onChangeRepeatMode(1)}
+                    className="text-slate-700"
+                  />
+                ) : repeatMode === 1 ? (
+                  <Repeat
+                    onClick={() => onChangeRepeatMode(2)}
+                    className="text-green-500"
+                  />
+                ) : (
+                  <Repeat1
+                    onClick={() => onChangeRepeatMode(0)}
+                    className="text-green-500"
+                  />
+                )}
+              </button>
+              <button onClick={togglePlay}>
+                {isPlaying ? (
+                  <PauseCircle className="text-slate-600 scale-150" />
+                ) : (
+                  <PlayCircle className="text-slate-600 scale-150" />
+                )}
+              </button>
+              <button onClick={reset}>
+                <RotateCcw className="text-slate-700" />
+              </button>
+              <div
+                className={cn("flex-center gap-2")}
+                onMouseEnter={() => setIsOpenVolume(true)}
+                onMouseLeave={() => setIsOpenVolume(false)}
+              >
+                {volume === 0 ? (
+                  <VolumeX
+                    onClick={() => onVolume(50)}
+                    className="text-slate-700 poi"
+                  />
+                ) : volume < 50 ? (
+                  <Volume1
+                    onClick={() => onVolume(0)}
+                    className="text-slate-700 poi"
+                  />
+                ) : (
+                  <Volume2
+                    onClick={() => onVolume(0)}
+                    className="text-slate-700 poi"
+                  />
+                )}
 
-          <div className="flex flex-col mt-3 gap-1">
-            <Progress
-              aria-label="Music progress"
-              classNames={{
-                indicator: "bg-default-800 dark:bg-white",
-                track: "bg-default-500/30 poi",
-              }}
-              onClick={seek}
-              color="default"
-              size="sm"
-              value={(currentTime / duration) * 100}
-              minValue={0}
-              maxValue={100}
-            />
+                <motion.input
+                  type="range"
+                  initial={{ opacity: 0 }}
+                  layout
+                  style={{
+                    width: isOpenVolume ? "50%" : "0%",
+                    opacity: isOpenVolume ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.2 }}
+                  min={0}
+                  max={100}
+                  onChange={(e) => onVolume(e)}
+                  value={volume}
+                  className="poi"
+                />
+              </div>
+            </div>
 
-            <div className="flex justify-between">
-              <p className="text-small text-foreground/50">
-                {formatTime(currentTime)}
-              </p>
-              <p className="text-small text-foreground/50">
-                {" "}
-                {formatTime(duration)}
-              </p>
+            <div className="flex flex-col mt-6 gap-1">
+              <Progress
+                aria-label="Music progress"
+                classNames={{
+                  indicator: "bg-default-800 dark:bg-white",
+                  track: "bg-default-500/30 poi",
+                }}
+                onClick={seek}
+                color="default"
+                size="sm"
+                value={(currentTime / duration) * 100}
+                minValue={0}
+                maxValue={100}
+              />
+
+              <div className="flex justify-between">
+                <p className="text-small text-foreground/50">
+                  {formatTime(currentTime)}
+                </p>
+                <p className="text-small text-foreground/50">
+                  {" "}
+                  {formatTime(duration)}
+                </p>
+              </div>
             </div>
           </div>
         </div>

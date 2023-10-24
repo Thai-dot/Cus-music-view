@@ -26,12 +26,12 @@ function LocalLayout({
   return (
     <div>
       {" "}
-      <h3>Public Profile</h3>
+      <h3 className="text-primary">Public Profile</h3>
       <Divider className="my-3" />
       <div className="lg:grid flex flex-col grid-cols-12 lg:gap-20 gap-5">
         {child1}
       </div>
-      <h3 className="mt-5">Update Information</h3>
+      <h3 className="mt-5 text-primary">Update Information</h3>
       <Divider className="my-3" />
       <div>{child2}</div>
     </div>
@@ -60,7 +60,7 @@ export default function InformationPage() {
     UpdateUserValidatorType
   >({
     mutationFn: async (reqData) => {
-      const {data} = await fetchUpdateUser(reqData);
+      const { data } = await fetchUpdateUser(reqData);
 
       return data;
     },
