@@ -15,11 +15,13 @@ export default function Music() {
     <div>
       <SortMusicSection />
       <DisplayMusicSection />
-      <MusicPlayer
-        isOpenPlayer={music.musicPlayerDisplay}
-        onClose={() => dispatch(setMusicPlayerDisplay(false))}
-        song={music.song}
-      />
+
+        <MusicPlayer
+          isOpenPlayer={music.musicPlayerDisplay}
+          onClose={() => dispatch(setMusicPlayerDisplay(false))}
+          song={music.song}
+        />
+  
     </div>
   );
 }

@@ -1,4 +1,4 @@
-interface IUser {
+export interface ISecureUser {
   createAt: string;
   email: string;
   firstname: string;
@@ -6,8 +6,11 @@ interface IUser {
   isVerify: boolean;
   lastName: string;
   role: string;
-  twoFASecret: string;
   updateAt: string;
+}
+
+interface IUser extends ISecureUser {
+  twoFASecret: string;
 }
 
 export default IUser;

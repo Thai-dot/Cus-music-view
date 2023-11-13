@@ -1,14 +1,25 @@
 import { Image } from "@nextui-org/react";
+import { motion } from "framer-motion";
 import React from "react";
 
 export default function MeetMeSection() {
   return (
     <section className="mb-32 mt-32 text-center">
-      <h2 className="mb-12 text-3xl font-bold">
+      <motion.h2
+        initial={{ opacity: 0, y: -100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-12 text-3xl font-bold"
+      >
         Meet <u className="text-primary dark:text-primary-400">me</u>
-      </h2>
+      </motion.h2>
 
-      <div className="flex-center w-full justify-center">
+      <motion.div
+        initial={{ opacity: 0, x: -100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="flex-center w-full justify-center"
+      >
         <div className="mb-6 lg:mb-0">
           <div className="block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
             <div className="relative overflow-hidden bg-cover bg-no-repeat">
@@ -77,7 +88,7 @@ export default function MeetMeSection() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -126,7 +126,7 @@ export default function UpdateSongSection({ song }: UpdateSongSectionProps) {
   async function onSubmit(data: UpdateMusicValidatorType) {
     try {
       setFileErr("");
-      console.log(data);
+
       let imgUploadInfor: IReturnFileInformation | null = null;
 
       let dto: any = {
@@ -163,7 +163,7 @@ export default function UpdateSongSection({ song }: UpdateSongSectionProps) {
         ...dto,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       toast.error("Something is wrong, can't add update song");
     }

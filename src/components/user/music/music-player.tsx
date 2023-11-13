@@ -9,6 +9,7 @@ import {
   Repeat,
   Repeat1,
   RotateCcw,
+  Shuffle,
   Volume1,
   Volume2,
   VolumeX,
@@ -24,14 +25,32 @@ import { SPEED_ARRAY } from "@/constant/config";
 import { cn } from "@/lib/utils";
 import { ISong } from "@/types/interface/ISongDTO";
 import formatTime from "@/utils/formatTimePlayer";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import {
+  setIsPlayingMusic,
+  setShuffleMode,
+  switchCurrentSong,
+  switchIndex,
+} from "@/redux/slice/playlist-player";
 
 interface MusicPlayerProps {
   isOpenPlayer?: boolean;
-  song?: ISong;
+  song?: ISong | null;
+  className?: string;
+  disableCloseButton?: boolean;
+  isPlaylistMode?: boolean;
   onClose?: (e?: any) => any;
 }
 
-function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
+function MusicPlayer({
+  isOpenPlayer,
+  song,
+  onClose,
+  className,
+  disableCloseButton,
+  isPlaylistMode,
+}: MusicPlayerProps) {
+  const [isDisable, setIsDisable] = useState<boolean>(!!song);
   const [isOpen, setIsOpen] = useState(isOpenPlayer);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -43,21 +62,21 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
   const [speed, setSpeed] = useState(1);
   const [volume, setVolume] = useState(50);
   const [isOpenVolume, setIsOpenVolume] = useState(false);
+  const dispatch = useAppDispatch();
+  const { songLists, isShuffleMode, isMusicPlaying } = useAppSelector(
+    (state) => state.playlistPlayerReducer
+  );
 
-  // const togglePlay = () => {
-  //   if (audioRef.current) {
-  //     if (isPlaying) {
-  //       audioRef?.current.pause();
-  //     } else {
-  //       if (repeatMode === 2 && timesRepeat !== 0) {
-  //         setTimesRepeat(0);
-  //       }
-  //       audioRef?.current.play();
-  //       audioRef.current.playbackRate = speed;
-  //     }
-  //     setIsPlaying(!isPlaying);
-  //   }
-  // };
+  const switchSong = React.useCallback(() => {
+    const currentIndex = songLists
+      .map((song) => song.songID)
+      .indexOf(song?.id ?? -1);
+    dispatch(switchIndex(currentIndex));
+    if (audioRef.current) {
+      setIsPlaying(true);
+      audioRef.current.play();
+    }
+  }, [dispatch, songLists, song?.id]);
 
   const togglePlay = React.useCallback(() => {
     if (audioRef.current) {
@@ -70,24 +89,23 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
         audioRef.current.play();
         audioRef.current.playbackRate = speed;
       }
+      dispatch(setIsPlayingMusic(!isPlaying));
       setIsPlaying(!isPlaying);
     }
-  }, [audioRef, isPlaying, repeatMode, timesRepeat, speed]);
+  }, [audioRef, isPlaying, repeatMode, timesRepeat, speed, dispatch]);
 
-  // const onVolume = (e: React.ChangeEvent<HTMLInputElement> | number) => {
-  //   const audioElement = audioRef.current;
-  //   if (audioElement) {
-  //     if (typeof e === "number") {
-  //       const getVolume = e / 100;
-  //       setVolume(e);
-  //       audioElement.volume = getVolume;
-  //     } else {
-  //       const getVolume = Number(e.target.value) / 100;
-  //       setVolume(Number(e.target.value));
-  //       audioElement.volume = getVolume;
-  //     }
-  //   }
-  // };
+  // play the music when  user click the outside play button
+  React.useEffect(() => {
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      if (isMusicPlaying) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+      setIsPlaying(isMusicPlaying);
+    }
+  }, [isMusicPlaying, isPlaying]);
 
   const onVolume = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement> | number) => {
@@ -116,7 +134,7 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
         setDuration(audioElement.duration);
       });
 
-      if (currentTime === duration) {
+      audioElement.addEventListener("ended", () => {
         if (repeatMode === 1) {
           setIsPlaying(true);
           audioElement.play();
@@ -126,8 +144,12 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
           setTimesRepeat((state) => state + 1);
         } else {
           setIsPlaying(false);
+          setCurrentTime(0);
+          if (isPlaylistMode) {
+            switchSong();
+          }
         }
-      }
+      });
 
       return () => {
         audioElement.removeEventListener("timeupdate", () => {
@@ -136,9 +158,21 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
         audioElement.removeEventListener("loadedmetadata", () => {
           setDuration(0);
         });
+
+        audioElement.removeEventListener("ended", () => {});
       };
     }
-  }, [currentTime, duration, repeatMode, timesRepeat, speed, song]);
+  }, [
+    currentTime,
+    duration,
+    repeatMode,
+    timesRepeat,
+    speed,
+    song,
+    isPlaylistMode,
+    dispatch,
+    switchSong,
+  ]);
 
   React.useEffect(() => {
     setIsPlaying(false);
@@ -163,8 +197,8 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
 
     const seekTime = (clickPosition / barWidth) * duration;
 
-    if (audioElement) {
-      audioElement.currentTime = seekTime;
+    if (audioElement && seekTime) {
+      audioElement.currentTime = seekTime ?? 0;
     }
 
     if (!isPlaying) {
@@ -186,25 +220,32 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
     }
     if (typeof onClose === "function") {
       onClose(e);
+    
     }
+
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full  z-50">
+    <div className={cn("w-full")}>
       <motion.div
         initial={{ y: "100%" }}
         animate={{ y: isOpen ? "0%" : "100%" }}
         transition={{ duration: 0.3 }}
-        className="bg-slate-100 text-white shadow-lg shadow-slate-500  p-5"
+        className={cn(
+          "bg-slate-100 text-white shadow-lg shadow-slate-500 p-3  fixed bottom-0 left-0 w-full  z-50 ",
+          className
+        )}
       >
         <audio ref={audioRef} src={song?.songURL}></audio>
         <div className="grid-cols-12 grid gap-5">
-          <div
-            className=" poi absolute top-1 md:right-4 right-1 text-red-500"
-            onClick={onClosePlayer}
-          >
-            <XCircle />
-          </div>
+          {!disableCloseButton && (
+            <div
+              className=" poi absolute top-1 md:right-4 right-1 text-red-500"
+              onClick={onClosePlayer}
+            >
+              <XCircle />
+            </div>
+          )}
 
           <div className="col-span-2 md:block hidden">
             <div className="flex-center flex-col gap-2">
@@ -244,6 +285,17 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
                   </DropdownMenu>
                 </Dropdown>
               </div>
+              {isPlaylistMode && (
+                <button>
+                  <Shuffle
+                    onClick={() => dispatch(setShuffleMode(!isShuffleMode))}
+                    className={cn(
+                      isShuffleMode ? "text-green-500" : "text-slate-700"
+                    )}
+                  />
+                </button>
+              )}
+
               <button>
                 {repeatMode === 0 ? (
                   <Repeat
@@ -319,7 +371,12 @@ function MusicPlayer({ isOpenPlayer, song, onClose }: MusicPlayerProps) {
                   indicator: "bg-default-800 dark:bg-white",
                   track: "bg-default-500/30 poi",
                 }}
-                onClick={seek}
+                isDisabled={isDisable}
+                onClick={(e) => {
+                  if (!isDisable) {
+                    seek(e);
+                  }
+                }}
                 color="default"
                 size="sm"
                 value={(currentTime / duration) * 100}

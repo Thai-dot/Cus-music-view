@@ -11,14 +11,13 @@ export async function middleware(req: NextRequest) {
 
   //@ts-ignore
   const decode = JSON?.parse(atob(token.access_token.split(".")[1]));
-  
+
   if (decode.exp * 1000 < new Date().getTime()) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
-
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/user/:path*"],
+  matcher: ["/user/:path*", "/playlist-player/:path*"],
 };

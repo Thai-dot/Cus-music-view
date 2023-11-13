@@ -6,6 +6,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import { Toaster } from "react-hot-toast";
 import { store } from "@/redux/store";
 import { Provider as ReduxProvider } from "react-redux";
+import ScrollToTopButton from "./ui-component/scroll-to-top-button";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient({
@@ -22,6 +23,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <ReduxProvider store={store}>
           <SessionProvider>{children}</SessionProvider>
+          <ScrollToTopButton />
         </ReduxProvider>
       </QueryClientProvider>
       <Toaster

@@ -13,8 +13,8 @@ export default function PlayListCardListInfiniteSection({
 }: {
   initialPlaylists: any;
 }) {
-  const lastSongRef = React.useRef<HTMLDivElement>(null);
-  const entry = useIntersectionObserver(lastSongRef, {
+  const lastPlaylistRef = React.useRef<HTMLDivElement>(null);
+  const entry = useIntersectionObserver(lastPlaylistRef, {
     threshold: 1,
   });
   const playlist = useAppSelector((state) => state.playlistSliceReducer);
@@ -79,7 +79,7 @@ export default function PlayListCardListInfiniteSection({
             <div
               className=" sm:col-span-6 col-span-12"
               key={item._id}
-              ref={lastSongRef}
+              ref={lastPlaylistRef}
             >
               <PlayListCard playlist={item._source} />
             </div>

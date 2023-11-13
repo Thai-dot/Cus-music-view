@@ -84,7 +84,7 @@ export default function AddMusicSection() {
   async function onSubmit(data: AddMusicValidatorType) {
     try {
       setFileErr("");
-      console.log(data);
+  
       let imgUploadInfor: IReturnFileInformation | null = null;
 
       let dto: any = {
@@ -130,7 +130,7 @@ export default function AddMusicSection() {
         extension: songRes.extension,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Something is wrong, can't add new song");
     }
   }

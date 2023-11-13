@@ -17,11 +17,11 @@ export default function MenuUser() {
       link: "/user/information",
     },
     {
-      name: "Play list",
+      name: "My Playlist",
       link: "/user/play-list",
     },
     {
-      name: "Music",
+      name: "My Music",
       link: "/user/music",
     },
   ];

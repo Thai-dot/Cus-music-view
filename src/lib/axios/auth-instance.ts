@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookies from "js-cookie";
 import { getSession } from "next-auth/react";
 
 const axiosAuthInstance = axios.create({

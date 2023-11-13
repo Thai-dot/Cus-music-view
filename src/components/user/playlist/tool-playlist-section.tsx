@@ -53,6 +53,7 @@ import {
 import { fetchUpdatePlayList } from "@/lib/axios/fetch/playlist/input-playlist";
 import { deletePlaylists } from "@/lib/axios/fetch/playlist/delete-playlist";
 import { playlistTypeArray } from "@/types/enum/playlist-type";
+import { useRouter } from "next/navigation";
 
 interface UpdatePlayListSectionProps {
   playlist: IPlayList;
@@ -62,7 +63,9 @@ export default function PlayListToolSection({
   playlist,
 }: UpdatePlayListSectionProps) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
   const {
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
@@ -164,7 +167,7 @@ export default function PlayListToolSection({
         ...dto,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       toast.error("Something is wrong, can't update playlist");
     }
@@ -194,6 +197,10 @@ export default function PlayListToolSection({
               <DropdownItem
                 startContent={<SidebarOpenIcon size={18} />}
                 key="new"
+                onClick={() => {
+                  router.push(`/playlist-player/${playlist.id}`);
+                  router.refresh();
+                }}
               >
                 Open
               </DropdownItem>
@@ -321,6 +328,13 @@ export default function PlayListToolSection({
             )}
           </ModalContent>
         </Modal>
+
+        {/* <PlaylistPlayerSection
+          id={playlist.id}
+          isOpen={isOpenPlaylist}
+          onOpenChange={onOpenChangePlayList}
+          onClose={onClosePlayList}
+        /> */}
       </div>
     </div>
   );

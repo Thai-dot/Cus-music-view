@@ -16,7 +16,7 @@ export default function MainLayout({
   return (
     <div>
       <NavbarLayout />
-      <div className={cn("min-h-screen", pathName === "/" ? "" : "py-16")}>
+      <div className={cn("min-h-screen", pathName === "/" ? "" : "pt-16")}>
         {children}
       </div>
       <FooterLayout />

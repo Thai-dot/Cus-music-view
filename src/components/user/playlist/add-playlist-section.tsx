@@ -121,7 +121,7 @@ export default function AddPlayListSection() {
         ...dto,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Something is wrong, can't add new song");
     }
   }

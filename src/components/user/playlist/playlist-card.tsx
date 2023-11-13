@@ -14,27 +14,29 @@ interface PlayListCardProps {
 export default function PlaylistCard({ playlist }: PlayListCardProps) {
   return (
     <div
-      className=" col-span-6 my-3 p-3 grid grid-cols-12 transition origin-bottom-left hover:scale-[0.98]
-       shadow-2xl rounded-lg"
+      className="  w-auto my-3 p-3 grid sm:grid-cols-12 grid-cols-1  place-items-center transition origin-bottom-left hover:scale-[0.98]
+       shadow-2xl rounded-lg justify-center"
       style={{ background: "linear-gradient(to left, #eecda3, #ef629f)" }}
     >
-      <div className="col-span-2">
+      <div className="sm:col-span-2 col-span-12 w-full flex justify-center">
         <Image
           src={
             !!playlist?.imgURL
               ? playlist.imgURL
               : "/image/play-list-card-image.png"
           }
-          className="object-cover w-[80px] h-[70px] "
+          className="object-cover sm:w-[80px] sm:h-[70px] w-[180px] h-[150px]  "
           alt={playlist.name}
         />
       </div>
 
-      <div className="col-span-8 flex-center flex-col gap-2">
-        <h4 className="text-primary-600">{truncateText(playlist.name, 20)}</h4>
-        <div>{playlist.type}</div>
+      <div className="sm:col-span-8 col-span-12 flex-center flex-col gap-2">
+        <h4 className="text-primary-600 sm:mt-0 mt-3">
+          {truncateText(playlist.name, 20)}
+        </h4>
+        <div className="sm:my-0 my-2">{playlist.type}</div>
       </div>
-      <div className="col-span-2 flex-center justify-center">
+      <div className="sm:col-span-2 col-span-12 flex-center justify-center">
         <div className="flex-center gap-2">
           {playlist.visibility ? <Eye /> : <EyeOff />}
 

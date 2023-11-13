@@ -75,13 +75,12 @@ export default function SignUpPage() {
           <Input
             {...register("email")}
             errorMessage={errors?.email?.message}
-            label="Email"
+            
             labelPlacement="outside"
             type="email"
             placeholder="Enter your email"
             className=" w-full  "
             startContent={<MailIcon />}
-            isClearable
             required
             isRequired
             maxLength={140}
@@ -89,13 +88,12 @@ export default function SignUpPage() {
           <Input
             {...register("password")}
             errorMessage={errors?.password?.message}
-            label="Password"
+          
             type="password"
             labelPlacement="outside"
             placeholder="Enter your password"
             className=" w-full mt-8  "
             startContent={<KeyRoundIcon />}
-            isClearable
             maxLength={140}
             required
             isRequired
@@ -103,13 +101,12 @@ export default function SignUpPage() {
           <Input
             {...register("firstname")}
             errorMessage={errors?.firstname?.message}
-            label="First Name"
+           
             type="text"
             labelPlacement="outside"
             placeholder="Enter your first name"
             className=" w-full mt-8  "
             startContent={<Smile />}
-            isClearable
             maxLength={20}
             required
             isRequired
@@ -117,13 +114,12 @@ export default function SignUpPage() {
           <Input
             {...register("lastName")}
             errorMessage={errors?.lastName?.message}
-            label="Last Name"
+           
             type="text"
             labelPlacement="outside"
             placeholder="Enter your last name"
             className=" w-full mt-8  "
             startContent={<Smile />}
-            isClearable
             maxLength={20}
             required
             isRequired

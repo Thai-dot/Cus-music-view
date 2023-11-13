@@ -76,38 +76,39 @@ export default function SignInPage() {
         animate={{ x: 0 }}
         initial={{ x: "-100vw" }}
         transition={{ duration: 0.2 }}
-      
         className=" md:w-[450px] w-[350px]  bg-slate-50 p-10 pt-7 rounded-2xl shadow-lg  "
       >
         <h2 className="mb-6">Login</h2>
-        <Input
-          {...register("email")}
-          errorMessage={errors?.email?.message}
-          label="Email"
-          labelPlacement="outside"
-          type="email"
-          placeholder="Enter your email"
-          className=" w-full  "
-          startContent={<MailIcon />}
-          isClearable
-          required
-          isRequired
-          maxLength={180}
-        />
-        <Input
-          {...register("password")}
-          errorMessage={errors?.password?.message}
-          label="Password"
-          type="password"
-          labelPlacement="outside"
-          placeholder="Enter your password"
-          className=" w-full mt-8  "
-          startContent={<KeyRoundIcon />}
-          isClearable
-          maxLength={32}
-          required
-          isRequired
-        />
+        <div className="my-4  ">
+          <Input
+            {...register("email")}
+            errorMessage={errors?.email?.message}
+            labelPlacement="outside"
+            type="email"
+            placeholder="Enter your email"
+            className=" w-full "
+            startContent={<MailIcon />}
+            required
+            isRequired
+            maxLength={180}
+          />
+        </div>
+        <div className="mt-6">
+          <Input
+            {...register("password")}
+            errorMessage={errors?.password?.message}
+          
+            type="password"
+            labelPlacement="outside"
+            placeholder="Enter your password"
+            className=" w-full mt-8  "
+            startContent={<KeyRoundIcon />}
+            maxLength={32}
+            required
+            isRequired
+          />
+        </div>
+
         <div className="flex justify-end mt-6">
           <Button isLoading={isLoading} type="submit" color="primary">
             Sign In

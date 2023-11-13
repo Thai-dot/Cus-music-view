@@ -21,7 +21,7 @@ export default function UserLayout() {
       link: "/user/information",
     },
     {
-      name: "Play list",
+      name: "My Playlist",
       link: "/user/play-list",
     },
     {
