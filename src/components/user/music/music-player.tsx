@@ -50,7 +50,6 @@ function MusicPlayer({
   disableCloseButton,
   isPlaylistMode,
 }: MusicPlayerProps) {
-  const [isDisable, setIsDisable] = useState<boolean>(!!song);
   const [isOpen, setIsOpen] = useState(isOpenPlayer);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -220,9 +219,7 @@ function MusicPlayer({
     }
     if (typeof onClose === "function") {
       onClose(e);
-    
     }
-
   };
 
   return (
@@ -371,11 +368,8 @@ function MusicPlayer({
                   indicator: "bg-default-800 dark:bg-white",
                   track: "bg-default-500/30 poi",
                 }}
-                isDisabled={isDisable}
                 onClick={(e) => {
-                  if (!isDisable) {
-                    seek(e);
-                  }
+                  seek(e);
                 }}
                 color="default"
                 size="sm"

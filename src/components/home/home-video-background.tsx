@@ -7,7 +7,7 @@ export default function HomeVideoBackground() {
         autoPlay
         loop
         muted
-        className=" object-fill h-screen drop-shadow-md -z-10  contrast-100 brightness-50 w-screen relative "
+        className=" object-fill h-screen  -z-10  contrast-100 brightness-50 w-screen relative "
       >
         <source src={"/video/home-background.mp4"} type="video/mp4" />
         Your browser does not support the video tag.

@@ -32,7 +32,6 @@ export const playlistPlayerSlice = createSlice({
   initialState,
   reducers: {
     setCurrentPlaylist: (state, action: PayloadAction<IExtendPlaylist>) => {
-      console.log(action.payload);
       state.currentPlaylist = action.payload;
 
       const sortOrderArray = [...action.payload.song ?? []].sort(

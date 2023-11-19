@@ -45,7 +45,11 @@ import {
   FILE_UPLOAD_MAX_SIZE,
 } from "@/constant/config";
 import { createPortal } from "react-dom";
-import { IPlayList, IPlayListDTO } from "@/types/interface/IPlayList";
+import {
+  IExtendPlaylist,
+  IPlayList,
+  IPlayListDTO,
+} from "@/types/interface/IPlayList";
 import {
   AddPlaylistValidator,
   AddPlaylistValidatorType,
@@ -56,11 +60,17 @@ import { playlistTypeArray } from "@/types/enum/playlist-type";
 import { useRouter } from "next/navigation";
 
 interface UpdatePlayListSectionProps {
-  playlist: IPlayList;
+  playlist: IPlayList | IExtendPlaylist;
+  isPlaylistPlayer?: boolean;
+  customOpen?: boolean;
+  customClose?: any;
 }
 
 export default function PlayListToolSection({
   playlist,
+  isPlaylistPlayer,
+  customOpen,
+  customClose,
 }: UpdatePlayListSectionProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -188,120 +198,134 @@ export default function PlayListToolSection({
   return (
     <div>
       <div>
-        <Tooltip content="Interact" className="poi">
-          <Dropdown>
-            <DropdownTrigger>
-              <MoreVertical className="poi" />
-            </DropdownTrigger>
-            <DropdownMenu>
-              <DropdownItem
-                startContent={<SidebarOpenIcon size={18} />}
-                key="new"
-                onClick={() => {
-                  router.push(`/playlist-player/${playlist.id}`);
-                  router.refresh();
-                }}
-              >
-                Open
-              </DropdownItem>
-              <DropdownItem
-                startContent={<PenSquare size={18} />}
-                key="copy"
-                onClick={onOpen}
-              >
-                Edit
-              </DropdownItem>
+        {!isPlaylistPlayer && (
+          <Tooltip content="Interact" className="poi">
+            <Dropdown>
+              <DropdownTrigger>
+                <MoreVertical className="poi" />
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem
+                  startContent={<SidebarOpenIcon size={18} />}
+                  key="new"
+                  onClick={() => {
+                    router.push(`/playlist-player/${playlist.id}`);
+                    router.refresh();
+                  }}
+                >
+                  Open
+                </DropdownItem>
+                <DropdownItem
+                  startContent={<PenSquare size={18} />}
+                  key="copy"
+                  onClick={onOpen}
+                >
+                  Edit
+                </DropdownItem>
 
-              <DropdownItem
-                startContent={<Trash2 size={18} />}
-                onClick={onOpenDelete}
-                key="delete"
-                className="text-danger"
-                color="danger"
-              >
-                Delete
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </Tooltip>
-        {createPortal(
-          <Modal
-            isOpen={isOpen}
-            backdrop="opaque"
-            className=" z-[10000]"
-            onOpenChange={onOpenChange}
-          >
-            <ModalContent>
-              {(onClose) => (
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <ModalHeader className="flex flex-col gap-1">
-                    Update Playlist
-                  </ModalHeader>
-                  <ModalBody>
-                    <FormControl>
-                      <Input
-                        placeholder="Playlist name"
-                        label="Playlist Name"
-                        maxLength={100}
-                        errorMessage={errors.name?.message}
-                        {...register("name")}
-                      />
-                    </FormControl>
-
-                    <FormControl>
-                      <FileUpload
-                        label="Playlist's background image update"
-                        error={fileErr}
-                        {...register("imgFile")}
-                      />
-                    </FormControl>
-
-                    <FormControl>
-                      <div className="flex-center justify-between">
-                        <Select
-                          {...register("type")}
-                          placeholder={playlist.type}
-                          label="Playlist Type"
-                          size="sm"
-                          className=" w-44 "
-                        >
-                          {playlistTypeArray.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </Select>
-
-                        <Switch
-                          isSelected={isSelected}
-                          onValueChange={setIsSelected}
-                          startContent={<Eye />}
-                          endContent={<EyeOff />}
-                        >
-                          Visibility
-                        </Switch>
-                      </div>
-                    </FormControl>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="danger" variant="light" onPress={onClose}>
-                      Close
-                    </Button>
-                    <Button
-                      startContent={<Plus />}
-                      isLoading={isLoading}
-                      color="primary"
-                      type="submit"
-                    >
-                      Update
-                    </Button>
-                  </ModalFooter>
-                </form>
-              )}
-            </ModalContent>
-          </Modal>,
-          document.body
+                <DropdownItem
+                  startContent={<Trash2 size={18} />}
+                  onClick={onOpenDelete}
+                  key="delete"
+                  className="text-danger"
+                  color="danger"
+                >
+                  Delete
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </Tooltip>
         )}
+
+        <Modal
+          isOpen={isOpen || customOpen}
+          backdrop="opaque"
+          className=" z-[10000]"
+          onOpenChange={onOpenChange}
+          onClose={() => {
+             if (typeof customClose === "function") {
+               customClose(false);
+             }
+          }}
+        >
+          <ModalContent>
+            {(onClose) => (
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <ModalHeader className="flex flex-col gap-1">
+                  Update Playlist
+                </ModalHeader>
+                <ModalBody>
+                  <FormControl>
+                    <Input
+                      placeholder="Playlist name"
+                      label="Playlist Name"
+                      maxLength={100}
+                      errorMessage={errors.name?.message}
+                      {...register("name")}
+                    />
+                  </FormControl>
+
+                  <FormControl>
+                    <FileUpload
+                      label="Playlist's background image update"
+                      error={fileErr}
+                      {...register("imgFile")}
+                    />
+                  </FormControl>
+
+                  <FormControl>
+                    <div className="flex-center justify-between">
+                      <Select
+                        {...register("type")}
+                        placeholder={playlist.type}
+                        label="Playlist Type"
+                        size="sm"
+                        className=" w-44 "
+                      >
+                        {playlistTypeArray.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </Select>
+
+                      <Switch
+                        isSelected={isSelected}
+                        onValueChange={setIsSelected}
+                        startContent={<Eye />}
+                        endContent={<EyeOff />}
+                      >
+                        Visibility
+                      </Switch>
+                    </div>
+                  </FormControl>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color="danger"
+                    variant="light"
+                    onPress={() => {
+                      onClose();
+                      if (typeof customClose === "function") {
+                        customClose(false);
+                      }
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    startContent={<Plus />}
+                    isLoading={isLoading}
+                    color="primary"
+                    type="submit"
+                  >
+                    Update
+                  </Button>
+                </ModalFooter>
+              </form>
+            )}
+          </ModalContent>
+        </Modal>
 
         <Modal
           isOpen={isOpenDelete}

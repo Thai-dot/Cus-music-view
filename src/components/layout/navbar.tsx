@@ -13,6 +13,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Avatar,
+  Image,
 } from "@nextui-org/react";
 import {
   Dropdown,
@@ -25,7 +26,15 @@ import { usePathname } from "next/navigation";
 
 import { signOut, useSession } from "next-auth/react";
 import { useScroll, useTransform, motion, easeInOut } from "framer-motion";
-import { LogIn } from "lucide-react";
+import {
+  CassetteTape,
+  ListMusic,
+  LogIn,
+  LogInIcon,
+  Mic2,
+  Music2,
+  UserSquare2,
+} from "lucide-react";
 import { decodeToken, isTokenExpired } from "@/utils/jwt-function";
 
 export default function NavbarLayout() {
@@ -37,13 +46,21 @@ export default function NavbarLayout() {
     {
       name: "User",
       link: "/user/information",
+      startContent: UserSquare2,
     },
     {
       name: "My Lists",
       link: "/user/play-list",
+      startContent: ListMusic,
+    },
+    {
+      name: "My Musics",
+      link: "/user/music",
+      startContent: CassetteTape,
     },
     {
       name: "Log out",
+      startContent: LogInIcon,
     },
   ];
 
@@ -71,12 +88,16 @@ export default function NavbarLayout() {
       name: "Music List",
       link: "/lists",
     },
+    {
+      name: "About",
+      link: "/about",
+    },
   ];
 
   return (
     <motion.nav
       style={{
-        backgroundColor: isHomePage ? backgroundColor : "#ddecfa",
+        backgroundColor: isHomePage ? backgroundColor : "#b7d8f7",
         transition: "background-color 0.2s",
       }}
       className="fixed w-full z-20 border-transparent"
@@ -89,7 +110,10 @@ export default function NavbarLayout() {
           />
           <NavbarBrand>
             <Link href="/">
-              <p className="font-extrabold text-primary ">YML</p>
+              <p className="font-extrabold text-primary  flex-center   gap-2">
+                <CassetteTape size={22} strokeWidth={2} />
+                YML
+              </p>
             </Link>
           </NavbarBrand>
         </NavbarContent>
@@ -122,11 +146,19 @@ export default function NavbarLayout() {
                   {leftDropdownMenu.map((item) => {
                     if (item.name === "Log out") {
                       return (
-                        <DropdownItem key={item.name}>
+                        <DropdownItem
+                          startContent={
+                            <item.startContent
+                              className="text-primary"
+                              size={16}
+                            />
+                          }
+                          key={item.name}
+                        >
                           {" "}
                           <div
                             onClick={() => signOut()}
-                            className="text-primary"
+                            className="text-primary font-medium"
                           >
                             {item.name}
                           </div>
@@ -135,9 +167,20 @@ export default function NavbarLayout() {
                     }
 
                     return (
-                      <DropdownItem key={item.name}>
+                      <DropdownItem
+                        startContent={
+                          <item.startContent
+                            className="text-primary"
+                            size={16}
+                          />
+                        }
+                        key={item.name}
+                      >
                         {" "}
-                        <Link href={item.link} className="w-full text-primary">
+                        <Link
+                          href={item.link}
+                          className="w-full text-primary font-medium"
+                        >
                           {item.name}
                         </Link>
                       </DropdownItem>
@@ -149,12 +192,12 @@ export default function NavbarLayout() {
           ) : (
             <>
               <NavbarItem className="hidden lg:flex">
-                <Link href="/sign-in" className="text-primary">
+                <Link href="/sign-in" className="text-primary font-medium">
                   Sign In
                 </Link>
               </NavbarItem>
               <NavbarItem className="hidden lg:flex">
-                <Link href="/sign-up" className="text-primary">
+                <Link href="/sign-up" className="text-primary font-medium">
                   Sign Up
                 </Link>
               </NavbarItem>
@@ -166,13 +209,19 @@ export default function NavbarLayout() {
                   <DropdownMenu aria-label="Static Actions">
                     <DropdownItem key="signIn">
                       {" "}
-                      <Link href="/sign-in" className="text-primary">
+                      <Link
+                        href="/sign-in"
+                        className="text-primary font-medium"
+                      >
                         Sign In
                       </Link>
                     </DropdownItem>
                     <DropdownItem key="signUp">
                       {" "}
-                      <Link href="/sign-up" className="text-primary">
+                      <Link
+                        href="/sign-up"
+                        className="text-primary font-medium"
+                      >
                         Sign Up
                       </Link>
                     </DropdownItem>

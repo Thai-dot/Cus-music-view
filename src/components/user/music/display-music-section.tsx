@@ -41,7 +41,7 @@ export default function DisplayMusicSection() {
     <div>
       <Divider className="my-5 " />
 
-      {data.data.length === 0 ? (
+      {data?.data?.length === 0 ? (
         <div className="flex-center justify-center flex-col w-full mt-10">
           <Frown size={25} />
           <p>There is no result found :(</p>

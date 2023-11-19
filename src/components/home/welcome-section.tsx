@@ -1,7 +1,8 @@
 import React from "react";
-import { Input } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { Search } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function WelcomeSection() {
   const defaultContent = "Your music playlist";
@@ -34,16 +35,9 @@ export default function WelcomeSection() {
         transition={{ duration: 0.3 }}
         className="absolute z-10  mt-[400px] flex justify-center items-center w-full"
       >
-        <Input
-          className=" lg:w-[40%]  md:w-[60%]  w-[80%]"
-          type="text"
-          placeholder="Find your playlist"
-          description="Some good lists are waiting for you"
-          isClearable
-          labelPlacement="outside"
-          startContent={<Search />}
-          maxLength={120}
-        />
+        <Link href={"/lists"}>
+          <Button color="primary" className="px-8">Explore</Button>
+        </Link>
       </motion.div>
     </div>
   );

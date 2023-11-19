@@ -8,7 +8,8 @@ export const fetchPlayListByUser = async (
   type = "",
   visibility: boolean | "",
   sortBy: "name" | "type" | "",
-  sortType = ""
+  sortType = "",
+  isLove: boolean | ""
 ) => {
   const { data } = await axiosAuthInstance.get(
     "play-list/get?" +
@@ -16,7 +17,8 @@ export const fetchPlayListByUser = async (
       (searchName !== "" ? `searchName=${searchName}&` : "") +
       (visibility !== "" ? `visibility=${visibility}&` : "") +
       (sortBy !== "" ? `sortBy=${sortBy}&` : "") +
-      (sortType !== "" ? `sortType=${sortType}` : ""),
+      (sortType !== "" ? `sortType=${sortType}&` : "") +
+      (isLove !== "" ? `isLove=${isLove}` : ""),
     {
       params: {
         page,
@@ -35,7 +37,8 @@ export const fetchAllPlaylist = async (
   type = "",
   visibility: boolean | "",
   sortBy: "name" | "type" | "",
-  sortType = ""
+  sortType = "",
+  isLove: boolean | ""
 ) => {
   const { data } = await axiosAuthInstance.get(
     "play-list/get-all?" +
@@ -43,7 +46,8 @@ export const fetchAllPlaylist = async (
       (searchName !== "" ? `searchName=${searchName}&` : "") +
       (visibility !== "" ? `visibility=${visibility}&` : "") +
       (sortBy !== "" ? `sortBy=${sortBy}&` : "") +
-      (sortType !== "" ? `sortType=${sortType}` : ""),
+      (sortType !== "" ? `sortType=${sortType}` : "") +
+      (isLove !== "" ? `isLove=${isLove}` : ""),
     {
       params: {
         page,
@@ -52,7 +56,7 @@ export const fetchAllPlaylist = async (
     }
   );
 
-  return data; 
+  return data;
 };
 
 export const fetchSinglePlaylist = async (

@@ -1,14 +1,14 @@
 import React from "react";
 import { useInfiniteQuery, useQueryClient } from "react-query";
 import { IQueryError } from "@/types/interface/IError";
-import PlayListCard from "./playlist-card";
 import { INFINITE_SCROLL_PAGINATION_PLAYLIST_LIMIT } from "@/constant/config";
 import { useIntersectionObserver } from "@/custom-hooks/use-intersection-observer";
 import { HashLoader } from "react-spinners";
 import { useAppSelector } from "@/redux/store";
-import { fetchPlayListByUser } from "@/lib/axios/fetch/playlist/get-playlist";
+import { fetchAllPlaylist, fetchPlayListByUser } from "@/lib/axios/fetch/playlist/get-playlist";
+import PlaylistTypeCard from "./playlist-type-card";
 
-export default function PlayListCardListInfiniteSection({
+export default function DisplayAllPlaylistInfiniteSection({
   initialPlaylists,
 }: {
   initialPlaylists: any;
@@ -19,6 +19,7 @@ export default function PlayListCardListInfiniteSection({
   });
   const playlist = useAppSelector((state) => state.playlistSliceReducer);
 
+
   const {
     isLoading,
     isError,
@@ -28,17 +29,17 @@ export default function PlayListCardListInfiniteSection({
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery<any, IQueryError>(
-    "playlist-user-infinite",
+    "all-playlist-infinite",
     async ({ pageParam = 1 }) => {
-      const { data } = await fetchPlayListByUser(
+      const { data } = await fetchAllPlaylist(
         pageParam,
         INFINITE_SCROLL_PAGINATION_PLAYLIST_LIMIT,
         playlist.searchName,
         playlist.type,
-        playlist.visibility,
-        playlist.currentSortBy,
-        playlist.sortType,
-        playlist.playlistSectionType === "all" ? false : true
+        "",
+        "",
+        undefined,
+        ""
       );
       return data;
     },
@@ -62,10 +63,6 @@ export default function PlayListCardListInfiniteSection({
     refetch,
     playlist.searchName,
     playlist.type,
-    playlist.visibility,
-    playlist.currentSortBy,
-    playlist.sortType,
-    playlist.playlistSectionType,
   ]);
 
   const playlists = data?.pages.flatMap((page) => page) ?? initialPlaylists;
@@ -79,17 +76,20 @@ export default function PlayListCardListInfiniteSection({
         if (index === playlists.length - 1) {
           return (
             <div
-              className=" sm:col-span-6 col-span-12"
+              className=" lg:col-span-3 md:col-span-4 col-span-12"
               key={item._id}
               ref={lastPlaylistRef}
             >
-              <PlayListCard playlist={item._source} />
+              <PlaylistTypeCard playlist={item._source} />
             </div>
           );
         }
         return (
-          <div className=" sm:col-span-6 col-span-12" key={item._id}>
-            <PlayListCard playlist={item._source} />
+          <div
+            className=" lg:col-span-3 md:col-span-4 col-span-12"
+            key={item._id}
+          >
+            <PlaylistTypeCard playlist={item._source} />
           </div>
         );
       })}

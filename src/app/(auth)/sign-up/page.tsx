@@ -12,6 +12,7 @@ import axiosAuthInstance from "@/lib/axios/auth-instance";
 import { IError } from "@/types/interface/IError";
 import { useRouter } from "next/navigation";
 import { SignUpValidator, SignUpValidatorType } from "@/lib/validator/sign-up";
+import Link from "next/link";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -75,7 +76,6 @@ export default function SignUpPage() {
           <Input
             {...register("email")}
             errorMessage={errors?.email?.message}
-            
             labelPlacement="outside"
             type="email"
             placeholder="Enter your email"
@@ -88,7 +88,6 @@ export default function SignUpPage() {
           <Input
             {...register("password")}
             errorMessage={errors?.password?.message}
-          
             type="password"
             labelPlacement="outside"
             placeholder="Enter your password"
@@ -101,7 +100,6 @@ export default function SignUpPage() {
           <Input
             {...register("firstname")}
             errorMessage={errors?.firstname?.message}
-           
             type="text"
             labelPlacement="outside"
             placeholder="Enter your first name"
@@ -114,7 +112,6 @@ export default function SignUpPage() {
           <Input
             {...register("lastName")}
             errorMessage={errors?.lastName?.message}
-           
             type="text"
             labelPlacement="outside"
             placeholder="Enter your last name"
@@ -124,7 +121,12 @@ export default function SignUpPage() {
             required
             isRequired
           />
-          <div className="flex justify-end mt-6">
+          <div className="flex-center gap-4 justify-end mt-6">
+            <Link href={"/sign-in"}>
+              <Button type="button" variant="light" color="primary">
+                Sign In
+              </Button>
+            </Link>
             <Button isLoading={isLoading} type="submit" color="primary">
               Register
             </Button>

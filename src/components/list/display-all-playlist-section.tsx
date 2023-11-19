@@ -4,26 +4,25 @@ import React from "react";
 
 import { useAppSelector } from "@/redux/store";
 import { useQuery } from "react-query";
-import { fetchPlayListByUser } from "@/lib/axios/fetch/playlist/get-playlist";
+import { fetchAllPlaylist } from "@/lib/axios/fetch/playlist/get-playlist";
 import { INFINITE_SCROLL_PAGINATION_PLAYLIST_LIMIT } from "@/constant/config";
 import CustomGridLoader from "@/components/ui-component/custom-grid-loader";
-import { Divider } from "@nextui-org/react";
 import { Frown } from "lucide-react";
-import PlayListCardListInfiniteSection from "./playlist-card-list-infinite-section";
+import DisplayAllPlaylistInfiniteSection from "./display-infinite-all-playlist-section";
 
-export default function DisplayPlaylistSection() {
+export default function DisplayAllPlaylistSection() {
   const playlist = useAppSelector((state) => state.playlistSliceReducer);
 
-  const { data, isLoading, refetch } = useQuery("fetchPlaylistByUser", () =>
-    fetchPlayListByUser(
+  const { data, isLoading, refetch } = useQuery("fetchAllPlaylistSection", () =>
+    fetchAllPlaylist(
       1,
       INFINITE_SCROLL_PAGINATION_PLAYLIST_LIMIT,
       playlist.searchName,
       playlist.type,
-      playlist.visibility,
-      playlist.currentSortBy,
-      playlist.sortType,
-      playlist.playlistSectionType === "all" ? false : true
+      "",
+      "",
+      undefined,
+      ""
     )
   );
 
@@ -33,10 +32,7 @@ export default function DisplayPlaylistSection() {
     refetch,
     playlist.searchName,
     playlist.type,
-    playlist.visibility,
-    playlist.currentSortBy,
-    playlist.sortType,
-    playlist.playlistSectionType,
+
   ]);
 
   if (isLoading) return <CustomGridLoader />;
@@ -51,7 +47,7 @@ export default function DisplayPlaylistSection() {
           </div>
         ) : (
           <div className="grid grid-cols-12 gap-10 pb-20">
-            <PlayListCardListInfiniteSection initialPlaylists={data.data} />
+            <DisplayAllPlaylistInfiniteSection initialPlaylists={data.data} />
           </div>
         )}
       </div>

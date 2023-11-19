@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import axiosAuthInstance from "@/lib/axios/auth-instance";
 import { IError } from "@/types/interface/IError";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 export default function SignInPage() {
   const {
@@ -97,7 +98,6 @@ export default function SignInPage() {
           <Input
             {...register("password")}
             errorMessage={errors?.password?.message}
-          
             type="password"
             labelPlacement="outside"
             placeholder="Enter your password"
@@ -109,7 +109,13 @@ export default function SignInPage() {
           />
         </div>
 
-        <div className="flex justify-end mt-6">
+        <div className="flex-center justify-end gap-4 mt-6">
+          <Link href={"/sign-up"}>
+          <Button  type="button" variant="light" color="primary">
+            Sign Up
+          </Button>
+          
+          </Link>
           <Button isLoading={isLoading} type="submit" color="primary">
             Sign In
           </Button>

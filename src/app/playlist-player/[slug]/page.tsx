@@ -79,9 +79,9 @@ export default function PlaylistPlayerPage({
         </div>
       ) : (
         <div
-          className="lg:px-32 md:px-16 px-4   py-4 pb-4 z-[5000]"
+          className="lg:px-32 md:px-16 px-4 bg-slate-800   py-4 pb-4 z-[5000]"
           style={{
-            background: "linear-gradient(to right, #0f2027, #203a43, #2c5364)",
+            background: "",
           }}
         >
           {data?.song?.length === 0 ? (
@@ -96,6 +96,7 @@ export default function PlaylistPlayerPage({
               songs={sortedArray?.map((song) => song.Song)}
               playlistID={data?.id}
               refetch={refetch}
+              playlist={data}
             />
           )}
         </div>

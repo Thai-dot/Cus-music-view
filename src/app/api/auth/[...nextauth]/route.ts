@@ -11,6 +11,8 @@ const authOptions = {
         email: { label: "email", type: "text" },
         code: { label: "code", type: "text" },
       },
+
+      //@ts-ignore
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
 
@@ -38,7 +40,7 @@ const authOptions = {
             },
           };
         } else {
-          throw new Error("Verification failed");
+          return "";
         }
       },
     }),

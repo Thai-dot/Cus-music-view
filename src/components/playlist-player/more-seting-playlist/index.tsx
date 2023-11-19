@@ -1,5 +1,6 @@
 import { DropdownItem, DropdownMenu, Tooltip } from "@nextui-org/react";
-import { MoreHorizontal, Settings, Share2 } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Settings } from "lucide-react";
+
 import React from "react";
 import {
   Modal,
@@ -14,12 +15,18 @@ import {
 } from "@nextui-org/react";
 
 import DisplayAssignSongSection from "./display-assign-song-section";
+import PlayListToolSection from "@/components/user/playlist/tool-playlist-section";
+import { useAppSelector } from "@/redux/store";
 
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
 export default function MoreSettingPlaylist() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [customOpen, setCustomOpen] = React.useState(false);
+  const { currentPlaylist } = useAppSelector(
+    (state) => state.playlistPlayerReducer
+  );
 
   return (
     <div>
@@ -33,14 +40,19 @@ export default function MoreSettingPlaylist() {
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
             <DropdownItem
-              key="edit"
+              key="add"
               onClick={onOpen}
+              startContent={<PlusCircle size={14} />}
+            >
+              Add song
+            </DropdownItem>
+
+            <DropdownItem
+              key="edit"
               startContent={<Settings size={14} />}
+              onClick={() => setCustomOpen(true)}
             >
               Edit
-            </DropdownItem>
-            <DropdownItem key="share" startContent={<Share2 size={14} />}>
-              Share
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -64,6 +76,15 @@ export default function MoreSettingPlaylist() {
           )}
         </ModalContent>
       </Modal>
+
+      {currentPlaylist && (
+        <PlayListToolSection
+          customClose={setCustomOpen}
+          customOpen={customOpen}
+          isPlaylistPlayer
+          playlist={currentPlaylist}
+        />
+      )}
     </div>
   );
 }

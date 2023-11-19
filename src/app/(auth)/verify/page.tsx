@@ -5,9 +5,10 @@ import React from "react";
 import VerificationInput from "react-verification-input";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import useSessionStorage from "@/custom-hooks/use-session-storage";
 
 export default function VerifyPage() {
-  const email = sessionStorage.getItem("loginEmail");
+  const email = useSessionStorage("loginEmail");
   const router = useRouter();
   const onSubmit = async (value: string) => {
     const result = await signIn("credentials", {
@@ -18,7 +19,7 @@ export default function VerifyPage() {
     });
   };
 
-  if (!email) {
+  if (email === undefined || email === null) {
     router.push("/");
     router.refresh();
   }

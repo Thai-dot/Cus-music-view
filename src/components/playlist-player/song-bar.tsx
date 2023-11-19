@@ -1,6 +1,7 @@
 import { useRaisedShadow } from "@/custom-hooks/use-raised-box-shadow";
+import { cn } from "@/lib/utils";
 import { switchCurrentSong } from "@/redux/slice/playlist-player";
-import { useAppDispatch } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { ISong } from "@/types/interface/ISongDTO";
 import formatTime from "@/utils/formatTimePlayer";
 import truncateText from "@/utils/truncate-text";
@@ -12,9 +13,10 @@ import React from "react";
 interface ISongBarProp {
   song: ISong | null;
   index: number;
+  isReorder?: boolean;
 }
 
-export default function SongBar({ song, index }: ISongBarProp) {
+export default function SongBar({ song, index, isReorder }: ISongBarProp) {
   const [displayPlayButton, setDisplayPlayButton] = React.useState(false);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const [duration, setDuration] = React.useState(0);
@@ -22,6 +24,11 @@ export default function SongBar({ song, index }: ISongBarProp) {
 
   const y = useMotionValue(0);
   const boxShadow = useRaisedShadow(y);
+
+  const { currentPlayedSong } = useAppSelector(
+    (state) => state.playlistPlayerReducer
+  );
+  const isThisSongPlayed = currentPlayedSong?.id === song?.id;
 
   React.useEffect(() => {
     const audioElement = audioRef.current;
@@ -44,9 +51,13 @@ export default function SongBar({ song, index }: ISongBarProp) {
       value={song}
       id={song?.songName ?? ""}
       style={{ boxShadow, y }}
+      dragListener={isReorder}
     >
       <div
-        className="bg-slate-600 hover:bg-slate-700 poi p-4 my-3 flex-center justify-between w-full rounded-lg "
+        className={cn(
+          "bg-neutral-200 hover:bg-neutral-300 poi p-4 my-3  flex-center justify-between w-full rounded-lg ",
+          isThisSongPlayed && "bg-neutral-300"
+        )}
         onMouseMove={() => setDisplayPlayButton(true)}
         onMouseOut={() => setDisplayPlayButton(false)}
         onClick={() => {
@@ -56,16 +67,17 @@ export default function SongBar({ song, index }: ISongBarProp) {
         <audio ref={audioRef} src={song?.songURL}></audio>
 
         <div className="flex-center gap-3 ">
-          {displayPlayButton ? (
+          {displayPlayButton || isThisSongPlayed ? (
             <div>
               <Play
-                className=" font-semibold text-white"
+                className=" font-semibold "
                 size={15}
                 fill="white"
+                stroke="white"
               />
             </div>
           ) : (
-            <div className="font-semibold text-slate-300  ">{index}</div>
+            <div className="font-semibold  ">{index}</div>
           )}
           {!!song && (
             <>
@@ -81,18 +93,16 @@ export default function SongBar({ song, index }: ISongBarProp) {
                 />
               </div>
               <div className="flex flex-wrap flex-col">
-                <h5 className="font-semibold break-words text-slate-300">
+                <h5 className="font-semibold break-words ">
                   {truncateText(song?.songName, 35)}
                 </h5>
-                <p className="text-slate-200 font-medium">{song?.author}</p>
+                <p className=" font-medium">{song?.author}</p>
               </div>
             </>
           )}
         </div>
-        <div>
-          
-        </div>
-        <div className="text-slate-200 font-semibold flex-center gap-1">
+        <div></div>
+        <div className=" font-semibold flex-center gap-1">
           <Timer />
           <div className="pt-[2px]">{formatTime(duration)}</div>
         </div>

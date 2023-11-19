@@ -9,6 +9,8 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Tabs,
+  Tab,
 } from "@nextui-org/react";
 import {
   ArrowDownAZ,
@@ -24,6 +26,8 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import AddPlayListSection from "./add-playlist-section";
 import {
+  PlaylistSectionType,
+  setPlaylistSectionType,
   setQueryPlaylist,
   setSortBy,
   setSortType,
@@ -32,6 +36,9 @@ import PLAY_LIST_TYPE from "@/types/enum/playlist-type";
 
 export default function SortPlayListSection() {
   const dispatch = useAppDispatch();
+  const { playlistSectionType } = useAppSelector(
+    (state) => state.playlistSliceReducer
+  );
 
   const handleVisibilityChange = (value: "" | boolean) => {
     dispatch(setQueryPlaylist({ queryType: "visibility", value }));
@@ -43,7 +50,7 @@ export default function SortPlayListSection() {
 
   interface sortMap {
     name: string;
-    value: "name"  | "type";
+    value: "name" | "type";
   }
 
   const sortMap: sortMap[] = [
@@ -157,8 +164,22 @@ export default function SortPlayListSection() {
           </div>
 
           <div>
-            <AddPlayListSection  />
+            <AddPlayListSection />
           </div>
+        </div>
+
+        <div className="flex-center w-full mt-5">
+          <Tabs
+            selectedKey={playlistSectionType}
+            onSelectionChange={(data) => {
+              const convertType: any = data;
+              dispatch(setPlaylistSectionType(convertType));
+            }}
+            variant="underlined"
+          >
+            <Tab key="all" title="All" />
+            <Tab key="love" title="Loved Playlist" />
+          </Tabs>
         </div>
       </div>
     </div>
