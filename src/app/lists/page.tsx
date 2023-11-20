@@ -17,7 +17,7 @@ export default function ListsPage() {
   }, [searchName, type]);
 
   return (
-    <div className="bg-[url('/image/white-space.png')] bg-repeat bg-auto w-full h-full bg-center">
+    <div className="bg-[url('/image/white-space.png')] dark:bg-[url('/image/black-pattern.jpg')] bg-repeat bg-auto w-full h-full bg-center">
       <div className="  px-5 py-24  container mx-auto">
         <ListHero />
 

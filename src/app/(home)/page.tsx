@@ -16,7 +16,7 @@ export default function Home() {
 
           <HomeVideoBackground />
         </div>
-        <div className="bg-[url('/image/white-space.png')]  bg-repeat bg-auto w-full h-full bg-center	">
+        <div className="bg-[url('/image/white-space.png')] dark:bg-[url('/image/black-pattern.jpg')]  bg-repeat bg-auto w-full h-full bg-center	">
           <div className="container py-24 mx-auto md:px-6 ">
             <StatsSection />
             <CTASection />

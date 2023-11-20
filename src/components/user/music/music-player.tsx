@@ -229,7 +229,7 @@ function MusicPlayer({
         animate={{ y: isOpen ? "0%" : "100%" }}
         transition={{ duration: 0.3 }}
         className={cn(
-          "bg-slate-100 text-white shadow-lg shadow-slate-500 p-3  fixed bottom-0 left-0 w-full  z-50 ",
+          "bg-slate-100 dark:bg-slate-800 text-white shadow-lg shadow-slate-500 p-3  fixed bottom-0 left-0 w-full  z-50 ",
           className
         )}
       >
@@ -263,7 +263,7 @@ function MusicPlayer({
               <div className="w-4 mr-2">
                 <Dropdown className="outline-none border-none focus-within:border-none focus:border-none focus-visible:border-none  focus-within:outline-none focus:outline-none focus-visible:outline-none ">
                   <DropdownTrigger className="outline-none border-none focus-within:border-none focus:border-none focus-visible:border-none  focus-within:outline-none focus:outline-none focus-visible:outline-none ">
-                    <button className="text-slate-700">{`x${speed}`}</button>
+                    <button className="text-slate-700 dark:text-slate-200">{`x${speed}`}</button>
                   </DropdownTrigger>
                   <DropdownMenu
                     aria-label="speed controls"
@@ -287,7 +287,9 @@ function MusicPlayer({
                   <Shuffle
                     onClick={() => dispatch(setShuffleMode(!isShuffleMode))}
                     className={cn(
-                      isShuffleMode ? "text-green-500" : "text-slate-700"
+                      isShuffleMode
+                        ? "text-green-500"
+                        : "text-slate-700 dark:text-slate-200"
                     )}
                   />
                 </button>
@@ -297,7 +299,7 @@ function MusicPlayer({
                 {repeatMode === 0 ? (
                   <Repeat
                     onClick={() => onChangeRepeatMode(1)}
-                    className="text-slate-700"
+                    className="text-slate-700 dark:text-slate-200"
                   />
                 ) : repeatMode === 1 ? (
                   <Repeat
@@ -313,13 +315,13 @@ function MusicPlayer({
               </button>
               <button onClick={togglePlay}>
                 {isPlaying ? (
-                  <PauseCircle className="text-slate-600 scale-150" />
+                  <PauseCircle className="text-slate-700 dark:text-slate-200 scale-150" />
                 ) : (
-                  <PlayCircle className="text-slate-600 scale-150" />
+                  <PlayCircle className="text-slate-700 dark:text-slate-200 scale-150" />
                 )}
               </button>
               <button onClick={reset}>
-                <RotateCcw className="text-slate-700" />
+                <RotateCcw className="text-slate-700 dark:text-slate-200" />
               </button>
               <div
                 className={cn("flex-center gap-2")}
@@ -329,17 +331,17 @@ function MusicPlayer({
                 {volume === 0 ? (
                   <VolumeX
                     onClick={() => onVolume(50)}
-                    className="text-slate-700 poi"
+                    className="text-slate-700 dark:text-slate-200 poi"
                   />
                 ) : volume < 50 ? (
                   <Volume1
                     onClick={() => onVolume(0)}
-                    className="text-slate-700 poi"
+                    className="text-slate-700 dark:text-slate-200 poi"
                   />
                 ) : (
                   <Volume2
                     onClick={() => onVolume(0)}
-                    className="text-slate-700 poi"
+                    className="text-slate-700 dark:text-slate-200 poi"
                   />
                 )}
 

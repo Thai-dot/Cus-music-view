@@ -77,9 +77,9 @@ export default function SignInPage() {
         animate={{ x: 0 }}
         initial={{ x: "-100vw" }}
         transition={{ duration: 0.2 }}
-        className=" md:w-[450px] w-[350px]  bg-slate-50 p-10 pt-7 rounded-2xl shadow-lg  "
+        className=" md:w-[450px] w-[350px]  bg-slate-50 dark:bg-slate-700 p-10 pt-7 rounded-2xl shadow-lg  "
       >
-        <h2 className="mb-6">Login</h2>
+        <h2 className="mb-6 text-slate-800 dark:text-slate-200">Login</h2>
         <div className="my-4  ">
           <Input
             {...register("email")}
@@ -111,10 +111,9 @@ export default function SignInPage() {
 
         <div className="flex-center justify-end gap-4 mt-6">
           <Link href={"/sign-up"}>
-          <Button  type="button" variant="light" color="primary">
-            Sign Up
-          </Button>
-          
+            <Button type="button" variant="light" color="primary">
+              Sign Up
+            </Button>
           </Link>
           <Button isLoading={isLoading} type="submit" color="primary">
             Sign In

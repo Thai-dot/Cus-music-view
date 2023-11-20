@@ -36,12 +36,42 @@ import {
   UserSquare2,
 } from "lucide-react";
 import { decodeToken, isTokenExpired } from "@/utils/jwt-function";
+import Switcher from "../ui-component/switcher";
+import useDarkSide from "@/custom-hooks/use-darkside";
 
 export default function NavbarLayout() {
+  const [theme] = useDarkSide();
+
+  const { scrollYProgress } = useScroll();
+  const backgroundColor = useTransform(
+    scrollYProgress,
+    [0, 0.1],
+    ["rgba(0, 0, 0, 0)", "#fcfcfc"],
+    {
+      ease: easeInOut,
+    }
+  );
+  const darkBackgroundColor = useTransform(
+    scrollYProgress,
+    [0, 0.1],
+    ["rgba(0, 0, 0, 0)", "#181818"],
+    {
+      ease: easeInOut,
+    }
+  );
+
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const pathName = usePathname();
   const isHomePage = pathName === "/";
+  const [homeColor, setHomeColor] = React.useState(backgroundColor);
 
+  React.useEffect(() => {
+    if (theme === "light") {
+      setHomeColor(darkBackgroundColor);
+    } else {
+      setHomeColor(backgroundColor);
+    }
+  }, [theme, backgroundColor, darkBackgroundColor]);
   const leftDropdownMenu = [
     {
       name: "User",
@@ -58,21 +88,12 @@ export default function NavbarLayout() {
       link: "/user/music",
       startContent: CassetteTape,
     },
+
     {
       name: "Log out",
       startContent: LogInIcon,
     },
   ];
-
-  const { scrollYProgress } = useScroll();
-  const backgroundColor = useTransform(
-    scrollYProgress,
-    [0, 0.1],
-    ["rgba(0, 0, 0, 0)", "#fcfcfc"],
-    {
-      ease: easeInOut,
-    }
-  );
 
   const { data: session } = useSession();
 
@@ -97,7 +118,7 @@ export default function NavbarLayout() {
   return (
     <motion.nav
       style={{
-        backgroundColor: isHomePage ? backgroundColor : "#b7d8f7",
+        backgroundColor: isHomePage ? homeColor : "#b7d8f7",
         transition: "background-color 0.2s",
       }}
       className="fixed w-full z-20 border-transparent"
@@ -110,7 +131,7 @@ export default function NavbarLayout() {
           />
           <NavbarBrand>
             <Link href="/">
-              <p className="font-extrabold text-primary  flex-center   gap-2">
+              <p className="font-extrabold text-primary dark:text-primary   flex-center   gap-2">
                 <CassetteTape size={22} strokeWidth={2} />
                 YML
               </p>
@@ -131,20 +152,45 @@ export default function NavbarLayout() {
         </NavbarContent>
         <NavbarContent justify="end">
           {!isExpired ? (
-            <NavbarItem>
-              <Dropdown>
-                <DropdownTrigger>
-                  <Avatar
-                    name={email.email.slice(0, 1)}
-                    classNames={{
-                      base: "bg-gradient-to-br from-[#00B4DB] to-[#0083B0]",
-                    }}
-                    className=" cursor-pointer uppercase"
-                  />
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Static Actions">
-                  {leftDropdownMenu.map((item) => {
-                    if (item.name === "Log out") {
+            <>
+              <NavbarItem>
+                <Switcher />
+              </NavbarItem>
+              <NavbarItem>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Avatar
+                      name={email.email.slice(0, 1)}
+                      classNames={{
+                        base: "bg-gradient-to-br from-[#00B4DB] to-[#0083B0]",
+                      }}
+                      className=" cursor-pointer uppercase"
+                    />
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="Static Actions">
+                    {leftDropdownMenu.map((item) => {
+                      if (item.name === "Log out") {
+                        return (
+                          <DropdownItem
+                            startContent={
+                              <item.startContent
+                                className="text-primary"
+                                size={16}
+                              />
+                            }
+                            key={item.name}
+                          >
+                            {" "}
+                            <div
+                              onClick={() => signOut()}
+                              className="text-primary dark:text-primary font-medium"
+                            >
+                              {item.name}
+                            </div>
+                          </DropdownItem>
+                        );
+                      }
+
                       return (
                         <DropdownItem
                           startContent={
@@ -156,41 +202,24 @@ export default function NavbarLayout() {
                           key={item.name}
                         >
                           {" "}
-                          <div
-                            onClick={() => signOut()}
-                            className="text-primary font-medium"
+                          <Link
+                            href={item.link}
+                            className="w-full text-primary font-medium"
                           >
                             {item.name}
-                          </div>
+                          </Link>
                         </DropdownItem>
                       );
-                    }
-
-                    return (
-                      <DropdownItem
-                        startContent={
-                          <item.startContent
-                            className="text-primary"
-                            size={16}
-                          />
-                        }
-                        key={item.name}
-                      >
-                        {" "}
-                        <Link
-                          href={item.link}
-                          className="w-full text-primary font-medium"
-                        >
-                          {item.name}
-                        </Link>
-                      </DropdownItem>
-                    );
-                  })}
-                </DropdownMenu>
-              </Dropdown>
-            </NavbarItem>
+                    })}
+                  </DropdownMenu>
+                </Dropdown>
+              </NavbarItem>
+            </>
           ) : (
             <>
+              <NavbarItem className="hidden lg:flex">
+                <Switcher />
+              </NavbarItem>
               <NavbarItem className="hidden lg:flex">
                 <Link href="/sign-in" className="text-primary font-medium">
                   Sign In
@@ -207,6 +236,9 @@ export default function NavbarLayout() {
                     <LogIn className="text-primary" cursor="pointer" />
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Static Actions">
+                    <DropdownItem key="switcher">
+                      <Switcher />
+                    </DropdownItem>
                     <DropdownItem key="signIn">
                       {" "}
                       <Link

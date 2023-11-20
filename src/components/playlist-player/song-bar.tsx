@@ -55,7 +55,7 @@ export default function SongBar({ song, index, isReorder }: ISongBarProp) {
     >
       <div
         className={cn(
-          "bg-neutral-200 hover:bg-neutral-300 poi p-4 my-3  flex-center justify-between w-full rounded-lg ",
+          "bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-800 poi p-4 my-3  flex-center justify-between w-full rounded-lg ",
           isThisSongPlayed && "bg-neutral-300"
         )}
         onMouseMove={() => setDisplayPlayButton(true)}

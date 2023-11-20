@@ -70,9 +70,9 @@ export default function SignUpPage() {
           initial={{ x: "-100vw" }}
           transition={{ duration: 0.2 }}
           exit={{ x: "100vw", opacity: 0, transition: { duration: 0.5 } }}
-          className="mx-auto md:w-[450px] w-[350px] md:mt-20 mt-16 bg-slate-50 p-10 pt-7 rounded-2xl shadow-lg  "
+          className="mx-auto md:w-[450px] w-[350px] md:mt-20 mt-16  bg-slate-50 dark:bg-slate-700 p-10 pt-7 rounded-2xl shadow-lg  "
         >
-          <h2 className="mb-6">Register</h2>
+          <h2 className="mb-6 text-slate-800 dark:text-slate-200">Register</h2>
           <Input
             {...register("email")}
             errorMessage={errors?.email?.message}

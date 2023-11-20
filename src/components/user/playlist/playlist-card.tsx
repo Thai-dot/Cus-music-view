@@ -15,8 +15,7 @@ export default function PlaylistCard({ playlist }: PlayListCardProps) {
   return (
     <div
       className="  w-auto my-3 p-3 grid sm:grid-cols-12 grid-cols-1  place-items-center transition origin-bottom-left hover:scale-[0.98]
-       shadow-2xl rounded-lg justify-center"
-      style={{ background: "linear-gradient(to left, #eecda3, #ef629f)" }}
+       shadow-2xl rounded-lg justify-center bg-gradient-to-r from-[#eecda3] to-[#ef629f] dark:from-[#393939] dark:to-[#7e7e7e]"
     >
       <div className="sm:col-span-2 col-span-12 w-full flex justify-center">
         <Image

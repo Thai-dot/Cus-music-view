@@ -30,7 +30,7 @@ export default function VerifyPage() {
         animate={{ x: 0 }}
         initial={{ x: "-100vw" }}
         transition={{ duration: 0.2 }}
-        className=" md:w-[500px] w-[350px]  bg-slate-50 p-10 pt-7 rounded-2xl shadow-lg flex-center justify-center flex-col  "
+        className=" md:w-[500px] w-[350px]  bg-slate-50 dark:bg-slate-800 p-10 pt-7 rounded-2xl shadow-lg flex-center justify-center flex-col  "
       >
         <div className="mt-5 text-center ">
           Verifying <b>{email} </b>logged in:
@@ -45,9 +45,9 @@ export default function VerifyPage() {
             }}
             classNames={{
               character:
-                "font-bold text-5xl text-center align-middle pt-[12px] md:h-20 h-16 rounded-lg border-slate-400	",
+                "font-bold text-5xl dark:text-black text-center align-middle pt-[12px] md:h-20 h-16 rounded-lg border-slate-400	",
               container: " md:w-[400px] w-[300px]",
-              characterInactive: " bg-slate-200",
+              characterInactive: " bg-slate-200 dark:bg-slate-800",
             }}
             placeholder=""
             length={5}
